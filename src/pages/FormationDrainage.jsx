@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 // Importation de la photo
-import imgFormation from '../assets/formation massage post operatoire.png';
+import imgFormation from '../assets/formation-massage.png';
 
 export default function FormationDrainage() {
   
