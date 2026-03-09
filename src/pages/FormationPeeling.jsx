@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 // CORRECTION ICI : Le bon nom et la bonne extension (.jpg)
-import imgFormation from '../assets/peeling.jpg';
+import imgFormation from '../assets/Peeling.jpg';
 
 export default function FormationPeeling() {
   
