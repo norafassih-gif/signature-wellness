@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 // J'ai mis à jour le nom de l'image tel que tu l'as demandé
-import imgFormation from '../assets/Plasma Froid.png';
+import imgFormation from '../assets/soin-plasma.png';
 
 export default function FormationPlasmaFroid() {
   
