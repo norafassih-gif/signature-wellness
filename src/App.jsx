@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 // IMPORTS DES COMPOSANTS
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CookieBanner from './components/CookieBanner'; // <--- AJOUT DE L'IMPORT ICI
 
 // IMPORTS DES PAGES
 import Home from './pages/Home';
@@ -19,7 +20,7 @@ import MentionsLegales from './pages/MentionsLegales';
 
 // LES PRESTATIONS AJOUTEES
 import Co2Fractionne from './pages/Co2Fractionne'; 
-import MiracleSculpt from './pages/MiracleSculpt'; // <--- NOUVELLE PAGE PRESTATION
+import MiracleSculpt from './pages/MiracleSculpt'; 
 
 // LES FORMATIONS
 import FormationDrainage from './pages/FormationDrainage';
@@ -50,7 +51,7 @@ function App() {
           
           {/* NOUVELLES PAGES PRESTATIONS */}
           <Route path="/co2-fractionne" element={<Co2Fractionne />} />
-          <Route path="/miracle-sculpt" element={<MiracleSculpt />} /> {/* <--- AJOUT ICI */}
+          <Route path="/miracle-sculpt" element={<MiracleSculpt />} />
 
           {/* ROUTES DES FORMATIONS */}
           <Route path="/formation/drainage-post-op" element={<FormationDrainage />} />
@@ -76,6 +77,9 @@ function App() {
       </main>
 
       <Footer />
+
+      {/* LA BANNIERE DE COOKIES APPARAÎTRA ICI SUR TOUTES LES PAGES */}
+      <CookieBanner /> 
     </div>
   );
 }
