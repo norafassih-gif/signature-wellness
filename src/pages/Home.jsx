@@ -24,7 +24,7 @@ import imgJambes from '../assets/soin-jambes.jpg'; // Ta nouvelle variable
 import imgBlanchiment from '../assets/Blanchiement.jpg';
 import imgDetatouage from '../assets/Detatouage.jpg';
 import imgPeeling from '../assets/Peeling.jpg';
-import imgPlasmaFroid from '../assets/soin-plasma.png';
+import imgPlasmaFroid from '../assets/soin-plasma.png'; // Remplace ici aussi
 
 export default function Home() {
   // --- SLIDER HERO ---
