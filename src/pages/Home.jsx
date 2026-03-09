@@ -14,13 +14,13 @@ import imgMassage from '../assets/massage.jpg';
 import imgNeedling from '../assets/microneedling.jpg';
 
 // 2. Image pour l'Effet Rideau
-import imgParallax from '../assets/Corp 3.jpg';
+import imgParallax from '../assets/Corp3.jpg';
 
 // 3. Toutes les images pour le Carrousel Instagram
 import imgHifu from '../assets/Hifu.jpg';
 import imgCorp1 from '../assets/Corp 1.jpg';
 import imgCorp2 from '../assets/Corp 2.jpg';
-import imgJambes from '../assets/Jambes.jpg';
+import imgJambes from '../assets/soin-jambes.jpg';
 import imgBlanchiment from '../assets/Blanchiement.jpg';
 import imgDetatouage from '../assets/Detatouage.jpg';
 import imgPeeling from '../assets/Peeling.jpg';
@@ -34,7 +34,7 @@ export default function Home() {
   // --- IMAGES POUR LE CARROUSEL INSTAGRAM ---
   const instagramPhotos = [
     imgNeedling, imgLaser, imgMassage, imgHydra, imgFemme1, imgHifu, 
-    imgCorp1, imgCorp2, imgJambes, imgBlanchiment, imgDetatouage, imgPeeling, imgPlasmaFroid
+    imgCorp1, imgCorp2, imgsoin-jambes, imgBlanchiment, imgDetatouage, imgPeeling, imgPlasmaFroid
   ];
 
   useEffect(() => {

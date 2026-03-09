@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // Importation des images 
 import imgMain from '../assets/Corp 2.jpg';
 import imgMadero from '../assets/maderotherapie.jpg';
-import imgJambe from '../assets/Jambes.jpg';
+import imgJambe from '../assets/soin-jambes.jpg';
 
 export default function MiracleSculpt() {
   
