@@ -14,13 +14,13 @@ import imgMassage from '../assets/massage.jpg';
 import imgNeedling from '../assets/microneedling.jpg';
 
 // 2. Image pour l'Effet Rideau
-import imgParallax from '../assets/Corp3.jpg';
+import imgParallax from '../assets/Corp3.jpg'; // Corrigé : plus d'espace ici
 
 // 3. Toutes les images pour le Carrousel Instagram
 import imgHifu from '../assets/Hifu.jpg';
-import imgCorp1 from '../assets/Corp 1.jpg';
-import imgCorp2 from '../assets/Corp 2.jpg';
-import imgJambes from '../assets/soin-jambes.jpg';
+import imgCorp1 from '../assets/Corp1.jpg'; // Corrigé : plus d'espace ici
+import imgCorp2 from '../assets/Corp2.jpg'; // Corrigé : plus d'espace ici
+import imgJambes from '../assets/soin-jambes.jpg'; // Ta nouvelle variable
 import imgBlanchiment from '../assets/Blanchiement.jpg';
 import imgDetatouage from '../assets/Detatouage.jpg';
 import imgPeeling from '../assets/Peeling.jpg';
@@ -33,8 +33,19 @@ export default function Home() {
 
   // --- IMAGES POUR LE CARROUSEL INSTAGRAM ---
   const instagramPhotos = [
-    imgNeedling, imgLaser, imgMassage, imgHydra, imgFemme1, imgHifu, 
-    imgCorp1, imgCorp2, imgsoin-jambes, imgBlanchiment, imgDetatouage, imgPeeling, imgPlasmaFroid
+    imgNeedling, 
+    imgLaser, 
+    imgMassage, 
+    imgHydra, 
+    imgFemme1, 
+    imgHifu, 
+    imgCorp1, 
+    imgCorp2, 
+    imgJambes, // CORRIGÉ : On utilise bien imgJambes ici
+    imgBlanchiment, 
+    imgDetatouage, 
+    imgPeeling, 
+    imgPlasmaFroid
   ];
 
   useEffect(() => {
@@ -68,9 +79,6 @@ export default function Home() {
         <meta name="description" content="Découvrez nos soins esthétiques haute technologie : Épilation Laser, Hydraface, Body Contouring et massages post-opératoires." />
       </Helmet>
       
-      {/* ========================================================
-          LE BLOC BLANC (Il cache l'image et glisse vers le haut)
-          ======================================================== */}
       <div className="relative z-10 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
         
         {/* --- HERO SLIDER --- */}
@@ -216,7 +224,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- CARROUSEL INSTAGRAM DÉFILANT (INFINI ET TOUTES PHOTOS) --- */}
+        {/* --- CARROUSEL INSTAGRAM DÉFILANT --- */}
         <div className="pt-24 pb-12 overflow-hidden reveal bg-[#fafaf9]">
            <div className="text-center mb-12">
               <p className="text-[#78716c] text-xs uppercase tracking-[0.3em] mb-2">Rejoignez-nous</p>
@@ -238,15 +246,10 @@ export default function Home() {
         </div>
       
       </div> 
-      {/* FIN DU BLOC BLANC */}
 
 
-      {/* ========================================================
-          L'EFFET RIDEAU (L'image fixée tout au fond)
-          ======================================================== */}
+      {/* --- L'EFFET RIDEAU --- */}
       <section className="relative w-full z-0">
-        
-        {/* L'image est fixée en bas, derrière le bloc blanc */}
         <div className="fixed bottom-0 left-0 w-full h-[60vh] md:h-[80vh] flex items-center justify-center -z-10">
           <img src={imgParallax} className="absolute inset-0 w-full h-full object-cover" alt="Fond Rideau" />
           <div className="absolute inset-0 bg-black/40"></div>
@@ -268,7 +271,6 @@ export default function Home() {
           </div>
         </div>
         
-        {/* Ce bloc transparent permet de "scroller" tout en bas pour dévoiler l'image */}
         <div className="h-[60vh] md:h-[80vh] w-full bg-transparent pointer-events-none"></div>
       </section>
 
