@@ -20,7 +20,7 @@ import imgParallax from '../assets/Corp 3.jpg';
 import imgHifu from '../assets/Hifu.jpg';
 import imgCorp1 from '../assets/Corp 1.jpg';
 import imgCorp2 from '../assets/Corp 2.jpg';
-import imgJambes from '../assets/jambes.jpg';
+import imgJambes from '../assets/Jambes.jpg';
 import imgBlanchiment from '../assets/Blanchiement.jpg';
 import imgDetatouage from '../assets/Detatouage.jpg';
 import imgPeeling from '../assets/Peeling.jpg';
