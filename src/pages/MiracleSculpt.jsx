@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 
-// Importation des images 
-import imgMain from '../assets/Corp 2.jpg';
+// --- IMPORTATION DES IMAGES (CORRIGÉES) ---
+import imgMain from '../assets/Corp2.jpg'; // Corrigé : plus d'espace ici
 import imgMadero from '../assets/maderotherapie.jpg';
-import imgJambe from '../assets/soin-jambes.jpg';
+import imgJambe from '../assets/soin-jambes.jpg'; // Corrigé : utilise le nouveau nom
 
 export default function MiracleSculpt() {
   
@@ -35,7 +35,7 @@ export default function MiracleSculpt() {
           Sculptez votre corps, lissez la cellulite et retrouvez des jambes légères grâce à nos techniques manuelles exclusives et nos technologies de pointe (Radiofréquence, Cavitation, Ondes de choc).
         </p>
 
-        {/* PHOTO PRINCIPALE (Corp 2.jpg) */}
+        {/* PHOTO PRINCIPALE */}
         <div className="max-w-5xl mx-auto h-[400px] md:h-[600px] overflow-hidden shadow-2xl mb-24">
             <img 
                 src={imgMain} 
@@ -142,7 +142,7 @@ export default function MiracleSculpt() {
           </div>
         </div>
 
-        {/* DOUBLE IMAGE (maderotherapie.jpg & jambe.jpg) */}
+        {/* DOUBLE IMAGE */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
           <div className="h-[300px] md:h-[400px] overflow-hidden shadow-lg">
             <img 
@@ -162,7 +162,7 @@ export default function MiracleSculpt() {
 
       </div>
 
-      {/* --- CTA : PRISE DE RDV (DESIGN COHÉRENT) --- */}
+      {/* --- CTA : PRISE DE RDV --- */}
       <section className="max-w-4xl mx-auto px-4 text-center mb-24">
          <div className="border border-[#e7e5e4] p-12 bg-white shadow-xl">
             <span className="text-[#78716c] text-xs font-bold uppercase tracking-[0.3em] mb-4 block">
