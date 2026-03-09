@@ -15,74 +15,96 @@ export default function Footer() {
   return (
     <footer className="relative z-20 bg-[#fafaf9] border-t border-[#e7e5e4] pt-20 pb-10 font-sans text-[#57534e]">
       
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
         
         {/* COLONNE 1 : MARQUE */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:col-span-1">
           <img src={logo} alt="Signature Wellness" className="h-12 w-auto opacity-80" />
-          <p className="text-xs leading-relaxed font-light text-[#78716c]">
-            L'excellence de la médecine esthétique au service de votre beauté.
+          <p className="text-[11px] leading-relaxed font-light text-[#78716c] uppercase tracking-wider">
+            L'excellence de la dermo-cosmétique & du soin esthetique.
           </p>
           <div className="flex gap-4 pt-2">
-            <a href="https://www.instagram.com/signature_wellness" target="_blank" rel="noreferrer" className="text-xs font-bold uppercase tracking-widest hover:text-[#BFA997] transition-colors">Instagram</a>
-            <a href="https://www.facebook.com/p/-𝐒𝐈𝐆𝐍𝐀𝐓𝐔𝐑𝐄-𝐖𝐄𝐋𝐋𝐍𝐄𝐒𝐒--100075573892334/" target="_blank" rel="noreferrer" className="text-xs font-bold uppercase tracking-widest hover:text-[#BFA997] transition-colors">Facebook</a>
+            <a href="https://www.instagram.com/signature_wellness" target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest hover:text-[#BFA997] transition-colors">Instagram</a>
+            <a href="https://www.facebook.com/p/-𝐒𝐈𝐆𝐍𝐀𝐓𝐔𝐑𝐄-𝐖𝐄𝐋𝐋𝐍𝐄𝐒𝐒--100075573892334/" target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest hover:text-[#BFA997] transition-colors">Facebook</a>
           </div>
         </div>
 
         {/* COLONNE 2 : NOS SOINS */}
         <div>
-          <h4 className="font-bold uppercase tracking-[0.2em] text-xs mb-6 text-[#57534e]">Nos Soins</h4>
-          <ul className="space-y-3 text-xs font-light text-[#78716c]">
+          <h4 className="font-bold uppercase tracking-[0.2em] text-[10px] mb-6 text-[#57534e]">Nos Soins</h4>
+          <ul className="space-y-3 text-[10px] font-medium uppercase tracking-widest text-[#78716c]">
             <li><Link to="/epilation-laser" className="hover:text-[#57534e] transition-colors">Épilation Laser</Link></li>
             <li><Link to="/soins-visage" className="hover:text-[#57534e] transition-colors">Hydraface</Link></li>
             <li><Link to="/microneedling" className="hover:text-[#57534e] transition-colors">Microneedling & PRP</Link></li>
-            <li><Link to="/body-contouring" className="hover:text-[#57534e] transition-colors">Corps & Cicatrices</Link></li>
-            <li><Link to="/massages" className="hover:text-[#57534e] transition-colors">Massages & Drainage</Link></li>
+            <li><Link to="/body-contouring" className="hover:text-[#57534e] transition-colors">Corps & Silhouette</Link></li>
+            <li><Link to="/massages" className="hover:text-[#57534e] transition-colors">Massages Post-Op</Link></li>
           </ul>
         </div>
 
-        {/* COLONNE 3 : INFORMATIONS UTILES */}
+        {/* COLONNE 3 : NOS FORMATIONS */}
         <div>
-          <h4 className="font-bold uppercase tracking-[0.2em] text-xs mb-6 text-[#57534e]">Informations</h4>
-          <ul className="space-y-3 text-xs font-light text-[#78716c]">
-            <li><Link to="/reservation" className="hover:text-[#57534e] transition-colors">Prendre Rendez-vous</Link></li>
-            <li><Link to="/mentions-legales" className="hover:text-[#57534e] transition-colors">Mentions Légales</Link></li>
-            <li><Link to="/mentions-legales" className="hover:text-[#57534e] transition-colors">Politique de Confidentialité</Link></li>
-            <li><Link to="/mentions-legales" className="hover:text-[#57534e] transition-colors">Gestion des Cookies</Link></li>
+          <h4 className="font-bold uppercase tracking-[0.2em] text-[10px] mb-6 text-[#57534e]">Formations</h4>
+          <ul className="space-y-3 text-[10px] font-medium uppercase tracking-widest text-[#78716c]">
+            <li><Link to="/formation/drainage-post-op" className="hover:text-[#57534e] transition-colors">Drainage Post-Op</Link></li>
+            <li><Link to="/formation/maderotherapie" className="hover:text-[#57534e] transition-colors">Madérothérapie</Link></li>
+            <li><Link to="/formation/peeling" className="hover:text-[#57534e] transition-colors">Peelings Experts</Link></li>
+            <li><Link to="/formation/hifu" className="hover:text-[#57534e] transition-colors">HIFU & Anti-Âge</Link></li>
+            <li><Link to="/formation/blanchiment-dentaire" className="hover:text-[#57534e] transition-colors">Blanchiment</Link></li>
           </ul>
         </div>
 
-        {/* COLONNE 4 : CONTACT MINIMALISTE */}
-        <div className="flex flex-col items-end justify-start gap-4">
-            
-            {/* WhatsApp : Juste l'icône dans un cercle */}
-            <a 
-              href="https://wa.me/33745169794" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-10 h-10 rounded-full border border-[#e7e5e4] text-[#25D366] bg-white hover:bg-[#25D366] hover:text-white transition-all duration-300 shadow-sm"
-              title="WhatsApp"
-            >
-               <WhatsAppIcon />
-            </a>
+        {/* COLONNE 4 : INFOS */}
+        <div>
+          <h4 className="font-bold uppercase tracking-[0.2em] text-[10px] mb-6 text-[#57534e]">Infos</h4>
+          <ul className="space-y-3 text-[10px] font-medium uppercase tracking-widest text-[#78716c]">
+            <li><Link to="/reservation" className="hover:text-[#57534e] transition-colors">Réservation</Link></li>
+            <li><Link to="/mentions-legales" className="hover:text-[#57534e] transition-colors">Mentions Légales</Link></li>
+            <li><Link to="/mentions-legales" className="hover:text-[#57534e] transition-colors">Confidentialité</Link></li>
+          </ul>
+        </div>
 
-            {/* Téléphone : Juste l'icône dans un cercle */}
-            <a 
-              href="tel:+33745169794" 
-              className="flex items-center justify-center w-10 h-10 rounded-full border border-[#e7e5e4] text-[#57534e] bg-white hover:bg-[#57534e] hover:text-white transition-all duration-300 shadow-sm"
-              title="Nous Appeler"
-            >
-               <PhoneIcon />
-            </a>
+        {/* COLONNE 5 : CONTACT */}
+        <div className="flex flex-col items-start lg:items-end justify-start gap-4">
+            <h4 className="font-bold uppercase tracking-[0.2em] text-[10px] mb-2 text-[#57534e] lg:hidden">Contact</h4>
+            <div className="flex lg:flex-col gap-4">
+                <a 
+                  href="https://wa.me/33745169794" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 rounded-full border border-[#e7e5e4] text-[#25D366] bg-white hover:bg-[#25D366] hover:text-white transition-all duration-300 shadow-sm"
+                  title="WhatsApp"
+                >
+                   <WhatsAppIcon />
+                </a>
 
+                <a 
+                  href="tel:+33745169794" 
+                  className="flex items-center justify-center w-10 h-10 rounded-full border border-[#e7e5e4] text-[#57534e] bg-white hover:bg-[#57534e] hover:text-white transition-all duration-300 shadow-sm"
+                  title="Nous Appeler"
+                >
+                   <PhoneIcon />
+                </a>
+            </div>
+            <p className="text-[9px] uppercase tracking-widest text-[#a8a29e] mt-2 lg:text-right">
+              Neuilly-sur-Seine
+            </p>
         </div>
 
       </div>
 
       {/* COPYRIGHT */}
-      <div className="border-t border-[#e7e5e4] pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-[#a8a29e] uppercase tracking-widest max-w-7xl mx-auto px-4 gap-4 md:gap-0">
+      <div className="border-t border-[#e7e5e4] pt-8 flex flex-col md:flex-row justify-between items-center text-[9px] text-[#a8a29e] uppercase tracking-[0.2em] max-w-7xl mx-auto px-4 gap-4 md:gap-0">
         <div>© {new Date().getFullYear()} Signature Wellness. Tous droits réservés.</div>
-        <div>Site réalisé par <a href="https://littlecreatrice.com" target="_blank" rel="noopener noreferrer" className="font-bold hover:text-[#57534e]">LITTLE CREATRICE</a></div>
+        <div>
+          Site réalisé par <a 
+            href="https://littlecreatrice.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="font-bold text-[#78716c] hover:text-[#57534e] transition-colors duration-300 underline underline-offset-4 decoration-stone-200"
+          >
+            LITTLE CREATRICE
+          </a>
+        </div>
       </div>
     </footer>
   );

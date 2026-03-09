@@ -13,7 +13,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-24">
           
           {/* LOGO */}
-          <Link to="/" className="flex-shrink-0 flex items-center">
+          <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex-shrink-0 flex items-center">
             <img className="h-14 w-auto hover:opacity-80 transition-opacity" src={logo} alt="Signature Wellness" />
           </Link>
 
@@ -46,16 +46,19 @@ export default function Navbar() {
                       to="/soins-visage" 
                       title="Hydraface" 
                       desc="Éclat & Pureté immédiate" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/microneedling" 
                       title="Microneedling" 
                       desc="Régénération cellulaire" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/epilation-laser"
                       title="Épilation Laser" 
                       desc="Technologie définitive" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                   </div>
 
@@ -65,16 +68,19 @@ export default function Navbar() {
                       to="/body-contouring" 
                       title="Corps & Silhouette" 
                       desc="Minceur & Remodelage" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/co2-fractionne" 
                       title="CO2 Fractionné" 
                       desc="Lissage cutané profond" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/miracle-sculpt" 
                       title="Miracle Sculpt" 
                       desc="Remodelage haute précision" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                   </div>
 
@@ -84,10 +90,11 @@ export default function Navbar() {
                       to="/massages" 
                       title="Post opératoire" 
                       desc="Massage bien-être" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     
                     {/* Lien Planning ANIMÉ */}
-                    <Link to="/reservation" className="block group mt-2 pl-4 border-l-2 border-transparent hover:border-stone-800 transition-all duration-300">
+                    <Link to="/reservation" onClick={() => setIsMenuOpen(false)} className="block group mt-2 pl-4 border-l-2 border-transparent hover:border-stone-800 transition-all duration-300">
                        <div className="relative inline-block">
                          <h3 className="font-bold text-stone-800 text-xs uppercase tracking-widest mb-1">
                            Planning
@@ -120,7 +127,7 @@ export default function Navbar() {
               >
                 <div className="h-[1px] w-full bg-stone-100 mb-8"></div>
 
-                <div className="p-8 pb-12 grid grid-cols-3 gap-8">
+                <div className="p-8 pb-12 grid grid-cols-3 gap-8 text-left">
                   
                   {/* Colonne 1 : Soins du Corps */}
                   <div className="space-y-6">
@@ -129,21 +136,25 @@ export default function Navbar() {
                       to="/formation/drainage-post-op" 
                       title="Drainage & Post-Op" 
                       desc="3 jours - Soin Corps" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/maderotherapie" 
                       title="Madérothérapie" 
                       desc="1 jour - Anti-Cellulite" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/radiofrequence-cavitation" 
                       title="Radiofréq. & Cavitation" 
                       desc="1 jour - Technologie Minceur" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/ondes-de-choc" 
                       title="Ondes de Choc" 
                       desc="1 jour - Fibrose cutanée" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                   </div>
 
@@ -154,21 +165,25 @@ export default function Navbar() {
                       to="/formation/hydraface" 
                       title="Hydraface" 
                       desc="1 jour - Soin Profond" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/peeling" 
                       title="Peelings (5 protocoles)" 
                       desc="2 jours - Acides & Sécurité" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/hifu" 
                       title="HIFU" 
                       desc="1 jour - Lifting sans chirurgie" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/plasma-froid" 
                       title="Plasma Froid & Fusion" 
                       desc="1 jour - Technologie avancée" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                   </div>
 
@@ -179,16 +194,19 @@ export default function Navbar() {
                       to="/formation/microneedling" 
                       title="Microneedling" 
                       desc="1 jour - Visage, Corps & Cicatrices" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/detatouage" 
                       title="Détatouage" 
                       desc="1 jour - Correction pigments" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                     <MenuLink 
                       to="/formation/blanchiment-dentaire" 
                       title="Blanchiment Dentaire" 
                       desc="1 jour - Cosmétique du sourire" 
+                      onClick={() => setIsMenuOpen(false)}
                     />
                   </div>
 
@@ -197,7 +215,7 @@ export default function Navbar() {
             </div>
 
             {/* BOUTON RDV RECTANGULAIRE */}
-            <Link to="/reservation" className="ml-4 text-stone-600 font-bold px-6 py-3 text-[11px] uppercase tracking-widest border border-stone-400 hover:bg-stone-500 hover:text-white transition-colors rounded-none">
+            <Link to="/reservation" onClick={() => setIsMenuOpen(false)} className="ml-4 text-stone-600 font-bold px-6 py-3 text-[11px] uppercase tracking-widest border border-stone-400 hover:bg-stone-500 hover:text-white transition-colors rounded-none">
               Prendre RDV
             </Link>
             
@@ -216,34 +234,34 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t border-stone-100 px-6 py-8 space-y-6 flex flex-col h-screen absolute w-full shadow-xl z-50 overflow-y-auto pb-32">
           
-          <div className="mb-6">
+          <div className="mb-6 text-left">
             <h3 className="text-[10px] text-stone-400 font-bold uppercase tracking-[0.3em] mb-4 border-b border-stone-100 pb-2">Nos Prestations</h3>
-            <MobileLink to="/soins-visage" text="Hydraface" />
-            <MobileLink to="/microneedling" text="Microneedling" />
-            <MobileLink to="/epilation-laser" text="Épilation Laser" />
-            <MobileLink to="/body-contouring" text="Corps & Silhouette" />
-            <MobileLink to="/massages" text="Post opératoire" />
-            <MobileLink to="/miracle-sculpt" text="Miracle Sculpt" />
-            <MobileLink to="/co2-fractionne" text="CO2 Fractionné" />
+            <MobileLink to="/soins-visage" text="Hydraface" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/microneedling" text="Microneedling" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/epilation-laser" text="Épilation Laser" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/body-contouring" text="Corps & Silhouette" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/massages" text="Post opératoire" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/miracle-sculpt" text="Miracle Sculpt" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/co2-fractionne" text="CO2 Fractionné" onClick={() => setIsMenuOpen(false)} />
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 text-left">
             <h3 className="text-[10px] text-stone-400 font-bold uppercase tracking-[0.3em] mb-4 border-b border-stone-100 pb-2">Nos Formations</h3>
-            <MobileLink to="/formation/drainage-post-op" text="Drainage Post-Op" />
-            <MobileLink to="/formation/maderotherapie" text="Madérothérapie" />
-            <MobileLink to="/formation/hydraface" text="Hydraface" />
-            <MobileLink to="/formation/peeling" text="Peelings" />
-            <MobileLink to="/formation/microneedling" text="Microneedling" />
-            <MobileLink to="/formation/hifu" text="HIFU" />
-            <MobileLink to="/formation/plasma-froid" text="Plasma Froid & Fusion" />
-            <MobileLink to="/formation/radiofrequence-cavitation" text="Radiofréq. & Cavitation" />
-            <MobileLink to="/formation/ondes-de-choc" text="Ondes de Choc" />
-            <MobileLink to="/formation/detatouage" text="Détatouage" />
-            <MobileLink to="/formation/blanchiment-dentaire" text="Blanchiment Dentaire" />
+            <MobileLink to="/formation/drainage-post-op" text="Drainage Post-Op" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/maderotherapie" text="Madérothérapie" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/hydraface" text="Hydraface" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/peeling" text="Peelings" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/microneedling" text="Microneedling" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/hifu" text="HIFU" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/plasma-froid" text="Plasma Froid & Fusion" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/radiofrequence-cavitation" text="Radiofréq. & Cavitation" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/ondes-de-choc" text="Ondes de Choc" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/detatouage" text="Détatouage" onClick={() => setIsMenuOpen(false)} />
+            <MobileLink to="/formation/blanchiment-dentaire" text="Blanchiment Dentaire" onClick={() => setIsMenuOpen(false)} />
           </div>
 
           <div className="border-t border-stone-100 my-4 pt-4">
-            <MobileLink to="/reservation" text="PRENDRE RDV" highlight={true} />
+            <MobileLink to="/reservation" text="PRENDRE RDV" highlight={true} onClick={() => setIsMenuOpen(false)} />
           </div>
         </div>
       )}
@@ -252,9 +270,9 @@ export default function Navbar() {
 }
 
 // --- COMPOSANT LIEN MEGA MENU ---
-function MenuLink({ title, desc, to }) {
+function MenuLink({ title, desc, to, onClick }) {
   return (
-    <Link to={to} className="group block pl-5 border-l-2 border-transparent hover:border-stone-800 transition-all duration-300">
+    <Link to={to} onClick={onClick} className="group block pl-5 border-l-2 border-transparent hover:border-stone-800 transition-all duration-300 text-left">
       <div className="relative inline-block w-full">
         <h3 className="font-bold text-stone-800 text-sm uppercase tracking-widest mb-1 group-hover:text-stone-500 transition-colors">
           {title}
@@ -269,13 +287,14 @@ function MenuLink({ title, desc, to }) {
 }
 
 // --- COMPOSANT LIEN MOBILE ---
-function MobileLink({ to, text, highlight }) {
+function MobileLink({ to, text, highlight, onClick }) {
   return (
     <Link 
       to={to} 
+      onClick={onClick}
       className={`block uppercase text-xs tracking-[0.2em] font-bold py-3 ${
         highlight 
-        ? 'text-stone-800 bg-stone-100 text-center rounded-none mt-4' 
+        ? 'text-white bg-stone-800 text-center rounded-none mt-4 py-4 px-4' 
         : 'text-stone-500 hover:text-stone-800 border-b border-stone-50'
       }`}
     >

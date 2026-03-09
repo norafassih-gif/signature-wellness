@@ -10,21 +10,21 @@ import imgFemme2 from '../assets/femmescouleurs2.jpg';
 import imgFemme3 from '../assets/femmescouleurs3.jpg';
 import imgLaser from '../assets/laser.jpg';
 import imgHydra from '../assets/hydrafacial.jpg';
-import imgMassage from '../assets/massage.jpg';
+import imgMassage from '../assets/formation-massage.png'; // Nouvelle photo pour Massage
 import imgNeedling from '../assets/microneedling.jpg';
 
 // 2. Image pour l'Effet Rideau
-import imgParallax from '../assets/Corp3.jpg'; // Corrigé : plus d'espace ici
+import imgParallax from '../assets/Corp3.jpg'; 
 
 // 3. Toutes les images pour le Carrousel Instagram
 import imgHifu from '../assets/Hifu.jpg';
-import imgCorp1 from '../assets/Corp1.jpg'; // Corrigé : plus d'espace ici
-import imgCorp2 from '../assets/Corp2.jpg'; // Corrigé : plus d'espace ici
-import imgJambes from '../assets/soin-jambes.jpg'; // Ta nouvelle variable
+import imgCorp1 from '../assets/Corp1.jpg'; 
+import imgCorp2 from '../assets/Corp2.jpg'; 
+import imgJambes from '../assets/soin-jambes.jpg'; 
 import imgBlanchiment from '../assets/Blanchiement.jpg';
 import imgDetatouage from '../assets/Detatouage.jpg';
 import imgPeeling from '../assets/Peeling.jpg';
-import imgPlasmaFroid from '../assets/soin-plasma.png'; // Remplace ici aussi
+import imgPlasmaFroid from '../assets/soin-plasma.png'; 
 
 export default function Home() {
   // --- SLIDER HERO ---
@@ -33,19 +33,8 @@ export default function Home() {
 
   // --- IMAGES POUR LE CARROUSEL INSTAGRAM ---
   const instagramPhotos = [
-    imgNeedling, 
-    imgLaser, 
-    imgMassage, 
-    imgHydra, 
-    imgFemme1, 
-    imgHifu, 
-    imgCorp1, 
-    imgCorp2, 
-    imgJambes, // CORRIGÉ : On utilise bien imgJambes ici
-    imgBlanchiment, 
-    imgDetatouage, 
-    imgPeeling, 
-    imgPlasmaFroid
+    imgNeedling, imgLaser, imgMassage, imgHydra, imgFemme1, imgHifu, 
+    imgCorp1, imgCorp2, imgJambes, imgBlanchiment, imgDetatouage, imgPeeling, imgPlasmaFroid
   ];
 
   useEffect(() => {
@@ -82,7 +71,7 @@ export default function Home() {
       <div className="relative z-10 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
         
         {/* --- HERO SLIDER --- */}
-        <div className="relative h-screen flex items-center justify-center overflow-hidden bg-[#57534e]">
+        <div className="relative h-[80vh] md:h-screen flex items-center justify-center overflow-hidden bg-[#57534e]">
           {slides.map((slide, index) => (
             <div 
               key={index}
@@ -116,13 +105,8 @@ export default function Home() {
         </div>
 
         {/* --- BANDEAU DÉFILANT --- */}
-        <div className="-mt-4 bg-[#78716c] text-white py-3 overflow-hidden relative z-20 shadow-lg border-y border-[#8c857f]">
+        <div className="-mt-1 bg-[#78716c] text-white py-3 overflow-hidden relative z-20 shadow-lg border-y border-[#8c857f]">
           <div className="animate-marquee whitespace-nowrap flex gap-16 text-[10px] md:text-xs font-medium uppercase tracking-[0.4em]">
-            <span>•</span><span>Expertise Médicale</span>
-            <span>•</span><span>Technologies de Pointe</span>
-            <span>•</span><span>Résultats Visibles</span>
-            <span>•</span><span>Bien-être Absolu</span>
-            <span>•</span><span>Signature Wellness</span>
             <span>•</span><span>Expertise Médicale</span>
             <span>•</span><span>Technologies de Pointe</span>
             <span>•</span><span>Résultats Visibles</span>
@@ -133,8 +117,8 @@ export default function Home() {
 
         {/* --- LE PROCESSUS --- */}
         <section className="py-24 bg-[#fafaf9] border-b border-[#e7e5e4] reveal">
-          <div className="max-w-7xl mx-auto px-4">
-             <div className="text-center mb-16">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+             <div className="mb-16">
                 <span className="text-[#78716c] text-xs font-bold uppercase tracking-[0.3em] mb-3 block">
                   Expérience Client
                 </span>
@@ -142,137 +126,125 @@ export default function Home() {
                   Votre Parcours Beauté
                 </h2>
              </div>
-             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
-                <div className="text-center group">
+             <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div className="group">
                    <div className="text-7xl font-serif text-[#e7e5e4] mb-6 group-hover:text-[#BFA997] transition-colors duration-500">01</div>
                    <h3 className="text-sm font-bold uppercase tracking-widest text-[#57534e] mb-3">Le Rituel</h3>
-                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Sélectionnez le soin adapté<br/>à vos besoins</p>
+                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Sélectionnez le soin</p>
                 </div>
-                <div className="text-center group">
+                <div className="group">
                    <div className="text-7xl font-serif text-[#e7e5e4] mb-6 group-hover:text-[#BFA997] transition-colors duration-500">02</div>
                    <h3 className="text-sm font-bold uppercase tracking-widest text-[#57534e] mb-3">L'Agenda</h3>
-                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Choisissez votre date<br/>et votre créneau idéal</p>
+                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Choisissez votre date</p>
                 </div>
-                <div className="text-center group">
+                <div className="group">
                    <div className="text-7xl font-serif text-[#e7e5e4] mb-6 group-hover:text-[#BFA997] transition-colors duration-500">03</div>
                    <h3 className="text-sm font-bold uppercase tracking-widest text-[#57534e] mb-3">La Validation</h3>
-                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Confirmez votre réservation<br/>en toute sécurité</p>
+                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Confirmez en sécurité</p>
                 </div>
-                <div className="text-center group">
+                <div className="group">
                    <div className="text-7xl font-serif text-[#e7e5e4] mb-6 group-hover:text-[#BFA997] transition-colors duration-500">04</div>
-                   <h3 className="text-sm font-bold uppercase tracking-widest text-[#57534e] mb-3">L'Instant Révélation</h3>
-                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Profitez de votre transformation<br/>le Jour J</p>
+                   <h3 className="text-sm font-bold uppercase tracking-widest text-[#57534e] mb-3">L'Instant</h3>
+                   <p className="text-xs text-[#78716c] font-medium leading-relaxed uppercase tracking-wide">Profitez du Jour J</p>
                 </div>
-             </div>
-             <div className="text-center mt-12">
-                <Link to="/reservation" className="inline-block bg-[#57534e] text-white px-12 py-4 uppercase text-xs font-bold tracking-[0.2em] hover:bg-[#78716c] transition-colors shadow-lg">
-                  Commencer l'expérience
-                </Link>
              </div>
           </div>
         </section>
 
-        {/* --- SECTIONS SOINS --- */}
-        <section className="py-24 px-4 md:px-0 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center border-b border-[#e7e5e4] pb-24">
-            <div className="md:w-1/2 md:pr-16 md:pl-8 mb-12 md:mb-0 text-left reveal">
+        {/* --- 1. SECTION MASSAGE (MISE EN PREMIER) --- */}
+        <section className="py-24 px-4 md:px-0 max-w-7xl mx-auto border-b border-[#e7e5e4]">
+          <div className="flex flex-col md:flex-row items-center reveal">
+            <div className="md:w-1/2 md:pr-16 md:pl-8 mb-12 md:mb-0 text-left">
+              <span className="text-[#78716c] text-xs font-bold uppercase tracking-[0.2em] mb-2 block">Détente Absolue</span>
+              <h2 className="text-3xl md:text-5xl mb-6 text-[#57534e]" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>Massage Post-Opératoire</h2>
+              <p className="text-[#57534e] leading-relaxed mb-6 font-light">L'expertise Signature Wellness : un accompagnement post-chirurgie optimal pour réduire l'oedème et favoriser la cicatrisation.</p>
+               <Link to="/massages" className="group relative inline-block text-[#57534e] uppercase text-xs tracking-widest font-bold mt-4">
+                <span className="relative z-10">Explorer la carte des massages</span>
+                <span className="absolute left-0 -bottom-2 h-[1px] w-0 bg-[#57534e] transition-all duration-700 group-hover:w-full"></span>
+              </Link>
+            </div>
+            <div className="md:w-1/2 w-full h-[400px] md:h-[600px]">
+              <img src={imgMassage} alt="Massage Post-Opératoire" className="w-full h-full object-cover shadow-2xl animate-float" />
+            </div>
+          </div>
+        </section>
+
+        {/* --- 2. SECTION LASER --- */}
+        <section className="py-24 px-4 md:px-0 max-w-7xl mx-auto border-b border-[#e7e5e4]">
+          <div className="flex flex-col md:flex-row-reverse items-center reveal">
+            <div className="md:w-1/2 md:pl-16 md:pr-8 mb-12 md:mb-0 text-left">
               <span className="text-[#78716c] text-xs font-bold uppercase tracking-[0.2em] mb-2 block">Technologie Définitive</span>
               <h2 className="text-3xl md:text-5xl mb-6 text-[#57534e]" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>Épilation Laser Médicale</h2>
               <p className="text-[#57534e] leading-relaxed mb-6 font-light">Dites adieu aux poils indésirables grâce à notre technologie laser de dernière génération.</p>
               <Link to="/epilation-laser" className="group relative inline-block text-[#57534e] uppercase text-xs tracking-widest font-bold mt-4">
                 <span className="relative z-10">Découvrir le protocole</span>
-                <span className="absolute left-0 -bottom-2 h-[1px] w-0 bg-[#57534e] transition-all duration-700 ease-out group-hover:w-full"></span>
+                <span className="absolute left-0 -bottom-2 h-[1px] w-0 bg-[#57534e] transition-all duration-700 group-hover:w-full"></span>
               </Link>
             </div>
-            <div className="md:w-1/2 w-full h-[600px] reveal">
-              <img src={imgLaser} alt="Epilation Laser" className="w-full h-full object-cover shadow-2xl animate-float" />
+            <div className="md:w-1/2 w-full h-[400px] md:h-[600px]">
+              <img src={imgLaser} alt="Epilation Laser" className="w-full h-full object-cover shadow-2xl animate-float-delay" />
             </div>
           </div>
         </section>
 
-        <section className="py-12 px-4 md:px-0 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row-reverse items-center border-b border-[#e7e5e4] pb-24">
-            <div className="md:w-1/2 md:pl-16 md:pr-8 mb-12 md:mb-0 text-left reveal">
+        {/* --- 3. SECTION HYDRAFACE --- */}
+        <section className="py-24 px-4 md:px-0 max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center reveal">
+            <div className="md:w-1/2 md:pr-16 md:pl-8 mb-12 md:mb-0 text-left">
               <span className="text-[#78716c] text-xs font-bold uppercase tracking-[0.2em] mb-2 block">Soins Visage & Éclat</span>
               <h2 className="text-3xl md:text-5xl mb-6 text-[#57534e]" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>HydraFace & Skin Care</h2>
               <p className="text-[#57534e] leading-relaxed mb-6 font-light">Révélez l'éclat de votre peau avec le soin HydraFace, une technologie brevetée unique qui nettoie, extrait et hydrate.</p>
               <Link to="/soins-visage" className="group relative inline-block text-[#57534e] uppercase text-xs tracking-widest font-bold mt-4">
                 <span className="relative z-10">Voir nos soins visage</span>
-                <span className="absolute left-0 -bottom-2 h-[1px] w-0 bg-[#57534e] transition-all duration-700 ease-out group-hover:w-full"></span>
+                <span className="absolute left-0 -bottom-2 h-[1px] w-0 bg-[#57534e] transition-all duration-700 group-hover:w-full"></span>
               </Link>
             </div>
-            <div className="md:w-1/2 w-full h-[600px] reveal">
-              <img src={imgHydra} alt="Soin Visage" className="w-full h-full object-cover shadow-2xl animate-float-delay" />
+            <div className="md:w-1/2 w-full h-[400px] md:h-[600px]">
+              <img src={imgHydra} alt="Soin Visage" className="w-full h-full object-cover shadow-2xl animate-float" />
             </div>
           </div>
         </section>
 
-        <section className="py-24 px-4 md:px-0 max-w-7xl mx-auto border-b border-[#e7e5e4] reveal">
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 md:pr-16 md:pl-8 mb-12 md:mb-0 text-left reveal">
-              <span className="text-[#78716c] text-xs font-bold uppercase tracking-[0.2em] mb-2 block">Détente Absolue</span>
-              <h2 className="text-3xl md:text-5xl mb-6 text-[#57534e]" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>Massages & Body Contouring</h2>
-              <p className="text-[#57534e] leading-relaxed mb-6 font-light">Lâchez prise dans un cadre d'exception. Nos massothérapeutes maîtrisent des techniques ancestrales.</p>
-               <Link to="/massages" className="group relative inline-block text-[#57534e] uppercase text-xs tracking-widest font-bold mt-4">
-                <span className="relative z-10">Explorer la carte des massages</span>
-                <span className="absolute left-0 -bottom-2 h-[1px] w-0 bg-[#57534e] transition-all duration-700 ease-out group-hover:w-full"></span>
-              </Link>
-            </div>
-            <div className="md:w-1/2 w-full h-[600px] reveal">
-              <img src={imgMassage} alt="Massage" className="w-full h-full object-cover shadow-2xl animate-float" />
-            </div>
-          </div>
-        </section>
-
-        {/* --- CARROUSEL INSTAGRAM DÉFILANT --- */}
-        <div className="pt-24 pb-12 overflow-hidden reveal bg-[#fafaf9]">
-           <div className="text-center mb-12">
-              <p className="text-[#78716c] text-xs uppercase tracking-[0.3em] mb-2">Rejoignez-nous</p>
-              <a href="https://instagram.com/Signature_Wellness" target="_blank" rel="noreferrer" className="text-2xl text-[#57534e] hover:text-[#BFA997] transition-colors" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>
-                @Signature_Wellness
-              </a>
-           </div>
-           
-           <div className="relative flex overflow-x-hidden group border-t border-[#e7e5e4] pt-2">
-             <div className="flex animate-carousel whitespace-nowrap group-hover:pause">
-               {instagramPhotos.map((img, idx) => (
-                 <img key={`first-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer" alt="Gallery item" />
-               ))}
-               {instagramPhotos.map((img, idx) => (
-                 <img key={`second-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer" alt="Gallery item" />
-               ))}
-             </div>
-           </div>
-        </div>
-      
       </div> 
 
-
-      {/* --- L'EFFET RIDEAU --- */}
-      <section className="relative w-full z-0">
-        <div className="fixed bottom-0 left-0 w-full h-[60vh] md:h-[80vh] flex items-center justify-center -z-10">
-          <img src={imgParallax} className="absolute inset-0 w-full h-full object-cover" alt="Fond Rideau" />
+      {/* --- L'EFFET RIDEAU (Avant Insta) --- */}
+      <section className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src={imgParallax} className="w-full h-full object-cover fixed top-0 left-0 -z-10" alt="Fond Parallaxe" />
           <div className="absolute inset-0 bg-black/40"></div>
-          
-          <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] mb-4 block text-white/90">
-              L'Excellence à Paris
-            </span>
+        </div>
+        <div className="relative z-10 h-full flex items-center justify-center text-center text-white px-4">
+          <div className="max-w-4xl">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] mb-4 block">L'Excellence à Paris</span>
             <h2 className="text-4xl md:text-6xl mb-8 drop-shadow-2xl" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>
               L'Art de Révéler <br />Votre Beauté Naturelle
             </h2>
-            <div className="h-[1px] w-24 bg-white mx-auto mb-10 opacity-50"></div>
-            <Link 
-              to="/reservation" 
-              className="inline-block bg-white text-[#57534e] px-12 py-4 uppercase text-xs font-bold tracking-[0.2em] hover:bg-[#57534e] hover:text-white transition-colors shadow-2xl"
-            >
+            <Link to="/reservation" className="inline-block bg-white text-[#57534e] px-12 py-4 uppercase text-xs font-bold tracking-[0.2em] hover:bg-[#57534e] hover:text-white transition-colors">
               Découvrir l'Institut
             </Link>
           </div>
         </div>
-        
-        <div className="h-[60vh] md:h-[80vh] w-full bg-transparent pointer-events-none"></div>
       </section>
+
+      {/* --- CARROUSEL INSTAGRAM --- */}
+      <div className="relative z-10 bg-white pt-24 pb-12 overflow-hidden reveal">
+         <div className="text-center mb-12">
+            <p className="text-[#78716c] text-xs uppercase tracking-[0.3em] mb-2">Rejoignez-nous</p>
+            <a href="https://instagram.com/Signature_Wellness" target="_blank" rel="noreferrer" className="text-2xl text-[#57534e] hover:text-[#BFA997] transition-colors" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>
+              @Signature_Wellness
+            </a>
+         </div>
+         <div className="relative flex overflow-x-hidden group border-t border-[#e7e5e4] pt-2">
+           <div className="flex animate-carousel whitespace-nowrap group-hover:pause">
+             {instagramPhotos.map((img, idx) => (
+               <img key={`first-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer" alt="Gallery item" />
+             ))}
+             {instagramPhotos.map((img, idx) => (
+               <img key={`second-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer" alt="Gallery item" />
+             ))}
+           </div>
+         </div>
+      </div>
 
     </div>
   );

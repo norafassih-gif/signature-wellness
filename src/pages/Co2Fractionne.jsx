@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 // --- IMPORTATION DES IMAGES (CORRIGÉES SANS ESPACES) ---
 import imgMain from '../assets/Hifu.jpg';
-import imgPlasma from '../assets/Plasma-Froid.png'; // Renomme ton fichier en Plasma-Froid.png
-import imgBottom from '../assets/Corp4.jpg';
+import imgPlasma from "../assets/soin-plasma.png"; 
+import imgBottom from "../assets/Corp4.jpg"; // Vérifie bien que c'est .jpg et sans espace
 
 export default function Co2Fractionne() {
   

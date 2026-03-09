@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // --- IMPORTATION DES IMAGES (CORRIGÉES) ---
 import imgMain from '../assets/Corp2.jpg'; // Corrigé : plus d'espace ici
 import imgMadero from '../assets/maderotherapie.jpg';
-import imgJambe from '../assets/soin-jambes.jpg'; // Corrigé : utilise le nouveau nom
+import imgJambe from "../assets/soin-jambes.jpg";
 
 export default function MiracleSculpt() {
   
