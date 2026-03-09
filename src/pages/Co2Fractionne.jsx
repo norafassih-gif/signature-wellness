@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 
-// Importation des images (vérifie bien que ces noms correspondent exactement à ceux de ton dossier assets)
+// --- IMPORTATION DES IMAGES (CORRIGÉES SANS ESPACES) ---
 import imgMain from '../assets/Hifu.jpg';
-import imgPlasma from '../assets/Plasma Froid.png';
-import imgBottom from '../assets/Corp 4.jpg';
+import imgPlasma from '../assets/Plasma-Froid.png'; // Renomme ton fichier en Plasma-Froid.png
+import imgBottom from '../assets/Corp4.jpg';
 
 export default function Co2Fractionne() {
   
@@ -35,7 +35,7 @@ export default function Co2Fractionne() {
           L'alliance des technologies les plus avancées du marché pour traiter le relâchement cutané, les cicatrices, les rides profondes et l'oxygénation des tissus. Des résultats visibles et durables, sans chirurgie.
         </p>
 
-        {/* PHOTO PRINCIPALE (Hifu.jpg) */}
+        {/* PHOTO PRINCIPALE */}
         <div className="max-w-5xl mx-auto h-[400px] md:h-[600px] overflow-hidden shadow-2xl mb-24">
             <img 
                 src={imgMain} 
@@ -111,7 +111,7 @@ export default function Co2Fractionne() {
           </div>
         </div>
 
-        {/* IMAGE INTERMÉDIAIRE (Plasma Froid.png) */}
+        {/* IMAGE INTERMÉDIAIRE */}
         <div className="max-w-4xl mx-auto h-[300px] md:h-[450px] overflow-hidden shadow-xl mb-24">
             <img 
                 src={imgPlasma} 
@@ -141,7 +141,7 @@ export default function Co2Fractionne() {
           </div>
         </div>
 
-        {/* IMAGE DU BAS (Corp 4.jpg) */}
+        {/* IMAGE DU BAS */}
         <div className="max-w-5xl mx-auto h-[400px] md:h-[500px] overflow-hidden shadow-2xl mb-16">
             <img 
                 src={imgBottom} 
@@ -151,7 +151,7 @@ export default function Co2Fractionne() {
         </div>
       </div>
 
-      {/* --- CTA : PRISE DE RDV (DESIGN COHERENT) --- */}
+      {/* --- CTA --- */}
       <section className="max-w-4xl mx-auto px-4 text-center mb-24">
          <div className="border border-[#e7e5e4] p-12 bg-white shadow-xl">
             <span className="text-[#78716c] text-xs font-bold uppercase tracking-[0.3em] mb-4 block">
