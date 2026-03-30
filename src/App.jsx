@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Booking from './pages/Booking';
 import MentionsLegales from './pages/MentionsLegales'; 
+import Comptabilite from './pages/Comptabilite'; // <--- NOUVEL IMPORT DE LA PAGE COMPTABILITE
 
 // LES PRESTATIONS AJOUTEES
 import Co2Fractionne from './pages/Co2Fractionne'; 
@@ -70,6 +71,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/reservation" element={<Booking />} />
+          <Route path="/comptabilite" element={<Comptabilite />} /> {/* <--- NOUVELLE ROUTE AJOUTEE */}
           
           {/* Page Légale */}
           <Route path="/mentions-legales" element={<MentionsLegales />} />
