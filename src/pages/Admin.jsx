@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, getDocs, deleteDoc, doc, query, where, orderBy } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import useGoogleCalendar from '../hooks/useGoogleCalendar';
 
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const daysOfWeek = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -12,11 +13,16 @@ export default function Admin() {
   const [user, setUser] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [blockedDays, setBlockedDays] = useState([]);
-  
+
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [syncingId, setSyncingId] = useState(null);
+  const [importing, setImporting] = useState(false);
+  const hasSyncedOnLoad = useRef(false);
+
+  const { isConnected, connect, disconnect, syncAppointment, fetchCalendarEvents } = useGoogleCalendar();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,6 +86,86 @@ export default function Admin() {
     }
   };
 
+  // Auto-sync au chargement si connecté et token valide
+  useEffect(() => {
+    if (isConnected && appointments.length > 0 && !hasSyncedOnLoad.current) {
+      hasSyncedOnLoad.current = true;
+      const unsynced = appointments.filter(a => a.status !== "BLOQUÉ_ADMIN" && !a.gcal_event_id);
+      if (unsynced.length > 0) handleSyncAll();
+    }
+  }, [isConnected, appointments]);
+
+  // Import des événements Google Calendar → bloque les créneaux dans Firestore
+  const handleImportGCal = async () => {
+    setImporting(true);
+    try {
+      const events = await fetchCalendarEvents();
+      const TIME_SLOTS = ["11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+      let count = 0;
+
+      for (const event of events) {
+        if (!event.start?.dateTime) continue; // ignore événements sans heure (journée entière)
+
+        const startDt = new Date(event.start.dateTime);
+        const endDt   = new Date(event.end.dateTime);
+
+        // Date en Paris (format YYYY-MM-DD)
+        const dateStr = startDt.toLocaleDateString('en-CA', { timeZone: 'Europe/Paris' });
+
+        for (const slot of TIME_SLOTS) {
+          const slotHour = parseInt(slot);
+          // Fenêtre du créneau en UTC (on compare en ms)
+          const slotStart = new Date(`${dateStr}T${slot}:00`);
+          slotStart.setTime(slotStart.getTime() - slotStart.getTimezoneOffset() * 60000 - (startDt.getTimezoneOffset() * 60000));
+          // Vérification simple : l'heure Paris de l'événement couvre-t-elle ce créneau ?
+          const parisStartHour = parseInt(startDt.toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', hour12: false }));
+          const parisEndHour   = parseInt(endDt.toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', hour12: false }));
+
+          if (slotHour < parisStartHour || slotHour >= parisEndHour) continue;
+
+          // Déjà bloqué ?
+          const alreadyExists = appointments.some(a => a.date === dateStr && a.time === slot);
+          const dayBlocked    = blockedDays.some(b => b.date === dateStr);
+          if (alreadyExists || dayBlocked) continue;
+
+          await addDoc(collection(db, "appointments"), {
+            date: dateStr, time: slot, status: "BLOQUÉ_ADMIN",
+            client: { nom: "AGENDA", prenom: event.summary?.slice(0, 20) || "GCal", tel: "", email: "" },
+            paid: true, gcal_import: true
+          });
+          count++;
+        }
+      }
+
+      await loadData();
+      alert(`${count} créneau(x) bloqué(s) depuis Google Calendar.`);
+    } catch (err) {
+      alert('Erreur import : ' + err.message);
+    }
+    setImporting(false);
+  };
+
+  const handleSync = async (apt) => {
+    if (syncingId) return;
+    setSyncingId(apt.id);
+    try {
+      const eventId = await syncAppointment(apt);
+      await updateDoc(doc(db, "appointments", apt.id), { gcal_event_id: eventId });
+      await loadData();
+    } catch (err) {
+      alert('Erreur de synchronisation : ' + err.message);
+    } finally {
+      setSyncingId(null);
+    }
+  };
+
+  const handleSyncAll = async () => {
+    const unsynced = appointments.filter(a => a.status !== "BLOQUÉ_ADMIN" && !a.gcal_event_id);
+    for (const apt of unsynced) {
+      await handleSync(apt);
+    }
+  };
+
   const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year, month) => {
     const day = new Date(year, month, 1).getDay();
@@ -105,6 +191,52 @@ export default function Admin() {
           <button onClick={() => { auth.signOut(); navigate('/'); }} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-stone-500 border border-stone-300 px-6 py-3 rounded-full hover:bg-stone-800 hover:text-white transition-all">
             <IconLogout className="w-4 h-4" /> Déconnexion
           </button>
+        </div>
+
+        {/* --- BANDEAU GOOGLE CALENDAR --- */}
+        <div className="bg-white rounded-3xl shadow-xl shadow-stone-200/50 p-6 border border-stone-100 mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-xl ${isConnected ? 'bg-green-50 text-green-600' : 'bg-stone-100 text-stone-400'}`}>
+                <IconCalendar className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-stone-800 uppercase tracking-widest">Google Calendar</h2>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  {isConnected ? 'Connecté — tu peux synchroniser les RDV' : 'Non connecté — clique pour synchroniser avec ton agenda'}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              {isConnected && (
+                <>
+                  <button
+                    onClick={handleImportGCal}
+                    disabled={importing}
+                    className="px-5 py-2 text-[10px] font-bold uppercase tracking-[0.2em] border border-blue-200 rounded-full text-blue-400 hover:bg-blue-50 transition-all disabled:opacity-40"
+                  >
+                    {importing ? 'Import...' : 'Importer agenda'}
+                  </button>
+                  <button
+                    onClick={handleSyncAll}
+                    className="px-5 py-2 text-[10px] font-bold uppercase tracking-[0.2em] border border-stone-200 rounded-full text-stone-500 hover:bg-stone-50 transition-all"
+                  >
+                    Tout synchroniser
+                  </button>
+                </>
+              )}
+              <button
+                onClick={isConnected ? disconnect : connect}
+                className={`px-6 py-2 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full transition-all ${
+                  isConnected
+                    ? 'bg-red-50 text-red-400 border border-red-200 hover:bg-red-100'
+                    : 'bg-stone-800 text-white hover:bg-stone-700'
+                }`}
+              >
+                {isConnected ? 'Déconnecter' : 'Connecter'}
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -203,15 +335,36 @@ export default function Admin() {
                     </div>
                     <div>
                       <h3 className="font-bold text-stone-800 text-lg capitalize">{apt.client.prenom} {apt.client.nom}</h3>
-                      <div className="flex items-center gap-4 text-xs text-stone-500 mt-2">
+                      <div className="flex items-center gap-2 flex-wrap text-xs text-stone-500 mt-2">
                         <span className="flex items-center gap-1 bg-stone-100 px-2 py-1 rounded"><IconClock className="w-3 h-3"/> {apt.time}</span>
+                        {apt.category && (
+                          <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${apt.category === 'postop' ? 'bg-blue-50 text-blue-500' : 'bg-stone-100 text-stone-500'}`}>
+                            {apt.category === 'postop' ? 'Post-op' : 'Autre'}
+                          </span>
+                        )}
                         <span className="flex items-center gap-1"><IconPhone className="w-3 h-3"/> {apt.client.tel}</span>
                       </div>
                     </div>
                   </div>
-                  <button onClick={() => deleteAppointment(apt.id)} className="p-2 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
-                    <IconTrash className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    {apt.gcal_event_id ? (
+                      <span className="flex items-center gap-1 text-[10px] text-green-500 font-bold uppercase tracking-widest px-2">
+                        <IconCheck className="w-3 h-3" /> Synchro
+                      </span>
+                    ) : isConnected ? (
+                      <button
+                        onClick={() => handleSync(apt)}
+                        disabled={syncingId === apt.id}
+                        title="Ajouter à Google Calendar"
+                        className="p-2 text-stone-300 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors disabled:opacity-40"
+                      >
+                        {syncingId === apt.id ? <IconSpinner className="w-4 h-4 animate-spin" /> : <IconCalendarPlus className="w-4 h-4" />}
+                      </button>
+                    ) : null}
+                    <button onClick={() => deleteAppointment(apt.id)} className="p-2 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
+                      <IconTrash className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ))
             )}
@@ -305,3 +458,6 @@ const IconChevronRight = ({ className }) => (<svg xmlns="http://www.w3.org/2000/
 const IconX = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>);
 const IconClock = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
 const IconLogout = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>);
+const IconCalendarPlus = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5M12 15v3m0 0v-3m0 3h3m-3 0H9" /></svg>);
+const IconCheck = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>);
+const IconSpinner = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className={className}><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" /></svg>);

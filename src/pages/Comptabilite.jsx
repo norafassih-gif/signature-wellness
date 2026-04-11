@@ -29,7 +29,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { db } from '../firebase';
 import {
   collection, addDoc, getDocs, deleteDoc,
-  doc, query, orderBy,
+  doc, query, orderBy, where,
 } from 'firebase/firestore';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -442,28 +442,20 @@ export default function Comptabilite() {
       const debut = new Date(); debut.setHours(0, 0, 0, 0);
       const fin   = new Date(); fin.setHours(23, 59, 59, 999);
 
-      const q = query(collection(db, "rdv_calendar"), orderBy("date", "asc"));
+      const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+      const q = query(collection(db, "appointments"), where("date", "==", today), orderBy("time", "asc"));
       const snap = await getDocs(q);
-      const tous = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-      // Filtre sur le jour courant
-      const duJour = tous.filter(rdv => {
-        if (!rdv.date) return false;
-        const d = new Date(rdv.date);
-        return d >= debut && d <= fin;
-      });
+      const duJour = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(a => a.status !== "BLOQUÉ_ADMIN");
 
       if (duJour.length === 0) {
-        setCalErreur("Aucun rendez-vous trouvé pour aujourd'hui dans Firestore. Vérifiez que Zapier est bien configuré et actif.");
+        setCalErreur("Aucun rendez-vous confirmé pour aujourd'hui.");
       }
 
       setRdvCalendar(duJour.map(rdv => ({
         id:          rdv.id,
-        titre:       rdv.titre || rdv.summary || "(Sans titre)",
-        heure:       rdv.heure || (rdv.date
-          ? new Date(rdv.date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-          : "Journée"),
-        description: rdv.description || "",
+        titre:       `${rdv.client?.prenom || ''} ${rdv.client?.nom || ''}`.trim() || "(Client)",
+        heure:       rdv.time || "—",
+        description: rdv.client?.tel ? `Tél : ${rdv.client.tel}` : "",
       })));
     } catch (err) {
       setCalErreur("Erreur lecture Firestore : " + err.message);

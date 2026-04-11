@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import PaymentButton from '../components/PaymentButton';
@@ -8,6 +8,24 @@ import logo from '../assets/logoSW.png';
 // --- CONFIGURATION DU CALENDRIER ---
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const daysOfWeek = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+const timeSlots = ["11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+
+// --- DISPONIBILITÉS PAR JOUR (0=Dim, 1=Lun, ..., 6=Sam) ---
+// null = fermé
+const DAY_SLOTS = {
+  0: null,                       // Dimanche — fermé
+  1: null,                       // Lundi — fermé
+  2: { postop: 2, autre: 1 },   // Mardi
+  3: { postop: 1, autre: 1 },   // Mercredi
+  4: { postop: 2, autre: 1 },   // Jeudi
+  5: { postop: 1, autre: 1 },   // Vendredi
+  6: { postop: 2, autre: 1 },   // Samedi
+};
+
+const CATEGORY_LABELS = {
+  postop: 'Post-opératoire',
+  autre: 'Autre',
+};
 
 export default function Booking() {
   const [step, setStep] = useState(1);
@@ -15,57 +33,85 @@ export default function Booking() {
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [blockedDates, setBlockedDates] = useState([]);
+  const [dayAppointments, setDayAppointments] = useState([]);
   const [isConfirmed, setIsConfirmed] = useState(false);
 
-  const timeSlots = ["11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-
+  // Charge les dates bloquées (journée entière)
   useEffect(() => {
     const loadBlockedDates = async () => {
       try {
         const q = query(collection(db, "schedule_exceptions"), where("type", "==", "blocked"));
         const snapshot = await getDocs(q);
-        const dates = snapshot.docs.map(doc => doc.data().date);
-        setBlockedDates(dates);
+        setBlockedDates(snapshot.docs.map(doc => doc.data().date));
       } catch (err) { console.log(err); }
     };
     loadBlockedDates();
   }, []);
+
+  // Charge les RDV du jour sélectionné pour calculer les disponibilités
+  useEffect(() => {
+    if (!selectedDate) { setDayAppointments([]); return; }
+    const loadDayAppts = async () => {
+      try {
+        const q = query(collection(db, "appointments"), where("date", "==", selectedDate));
+        const snapshot = await getDocs(q);
+        setDayAppointments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (err) { console.log(err); }
+    };
+    loadDayAppts();
+  }, [selectedDate]);
+
+  // --- Calcule les places restantes pour un créneau donné ---
+  const getSlotAvailability = (time) => {
+    if (!selectedDate) return null;
+    const dayOfWeek = new Date(selectedDate + 'T12:00:00').getDay();
+    const config = DAY_SLOTS[dayOfWeek];
+    if (!config) return null;
+
+    // Créneau bloqué par l'admin ?
+    const adminBlocked = dayAppointments.some(a => a.time === time && a.status === 'BLOQUÉ_ADMIN');
+    if (adminBlocked) return null;
+
+    const appts = dayAppointments.filter(a => a.time === time && a.status !== 'BLOQUÉ_ADMIN');
+    return {
+      postop: Math.max(0, config.postop - appts.filter(a => a.category === 'postop').length),
+      autre:  Math.max(0, config.autre  - appts.filter(a => a.category === 'autre').length),
+    };
+  };
 
   // --- ENVOI DE L'EMAIL DE CONFIRMATION ---
   const sendConfirmationEmail = () => {
     const templateParams = {
       to_name: `${client.prenom} ${client.nom}`,
       to_email: client.email,
-      date: new Date(selectedDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }),
+      date: new Date(selectedDate + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }),
       time: selectedTime,
+      category: CATEGORY_LABELS[selectedCategory] || selectedCategory,
       address: "18 Rue d'Armenonville, 92200 Neuilly-sur-Seine",
-      reply_to: "signature.wellnessacademy@gmail.com"
+      reply_to: "signature.wellnessagenda@gmail.com"
     };
-
-    // Remplace par tes IDs EmailJS une fois ton compte créé
     emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams, 'YOUR_PUBLIC_KEY')
-      .then((result) => {
-          console.log("Email envoyé avec succès !");
-      }, (error) => {
-          console.log("Erreur lors de l'envoi de l'email :", error.text);
-      });
+      .then(() => console.log("Email envoyé !"))
+      .catch(err => console.log("Erreur email :", err));
   };
 
   const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year, month) => {
     const day = new Date(year, month, 1).getDay();
-    return day === 0 ? 6 : day - 1; 
+    return day === 0 ? 6 : day - 1;
   };
 
   const handleDayClick = (day) => {
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth();
     const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    if (blockedDates.includes(dateStr)) return;
-    
+    const dayOfWeek = new Date(year, month, day).getDay();
+    if (blockedDates.includes(dateStr) || !DAY_SLOTS[dayOfWeek]) return;
     setSelectedDate(dateStr);
     setSelectedTime('');
+    setSelectedCategory('');
   };
 
   const changeMonth = (offset) => {
@@ -75,32 +121,28 @@ export default function Booking() {
 
   const handleClientChange = (e) => setClient({ ...client, [e.target.name]: e.target.value });
   const handleInfoSubmit = (e) => { e.preventDefault(); setStep(2); };
-  const handleDateSubmit = (e) => { e.preventDefault(); setStep(3); };
-  
+  const handleDateSubmit = () => { if (selectedTime && selectedCategory) setStep(3); };
+
   const handleSuccessPayment = async () => {
     try {
-      // 1. Enregistrement Firebase
       await addDoc(collection(db, "appointments"), {
-        client, 
-        date: selectedDate, 
-        time: selectedTime, 
-        status: "confirmé", 
-        paid: true, 
+        client,
+        date: selectedDate,
+        time: selectedTime,
+        category: selectedCategory,
+        status: "confirmé",
+        paid: true,
         created_at: new Date()
       });
-
-      // 2. Envoi de l'email
       sendConfirmationEmail();
-
-      // 3. Affichage de l'écran de succès
       setIsConfirmed(true);
-    } catch (error) { 
+    } catch (error) {
       console.error(error);
-      alert("Erreur technique lors de l'enregistrement."); 
+      alert("Erreur technique lors de l'enregistrement.");
     }
   };
 
-  // --- ECRAN DE SUCCÈS (RÉCAPITULATIF ÉLÉGANT) ---
+  // --- ECRAN DE SUCCÈS ---
   if (isConfirmed) {
     return (
       <div className="pt-40 pb-20 px-4 min-h-screen bg-white text-center animate-fade-in">
@@ -116,13 +158,13 @@ export default function Booking() {
             Merci de votre confiance, {client.prenom}. <br />
             Un récapitulatif détaillé vous a été envoyé par e-mail.
           </p>
-          
           <div className="bg-stone-50 p-8 rounded-2xl border border-stone-100 text-left space-y-6">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-2">Prestation & Horaire</p>
               <p className="text-stone-800 font-medium capitalize">
-                {new Date(selectedDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} à {selectedTime}
+                {new Date(selectedDate + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} à {selectedTime}
               </p>
+              <p className="text-stone-500 text-sm mt-1">{CATEGORY_LABELS[selectedCategory]}</p>
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-2">Lieu du rendez-vous</p>
@@ -131,9 +173,8 @@ export default function Booking() {
               </p>
             </div>
           </div>
-
-          <button 
-            onClick={() => window.location.href = "/"} 
+          <button
+            onClick={() => window.location.href = "/"}
             className="mt-12 text-[10px] uppercase tracking-[0.3em] text-stone-400 hover:text-stone-800 transition-colors duration-300"
           >
             Retour à l'accueil
@@ -152,7 +193,8 @@ export default function Booking() {
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl shadow-stone-200/50 overflow-hidden border border-stone-100 p-6 md:p-10">
-          
+
+          {/* ─── ÉTAPE 1 : Informations client ─── */}
           {step === 1 && (
             <form onSubmit={handleInfoSubmit} className="space-y-6 max-w-lg mx-auto">
               <h2 className="text-xl font-medium text-stone-800 text-center mb-8 uppercase tracking-widest text-sm">Vos informations</h2>
@@ -166,8 +208,11 @@ export default function Booking() {
             </form>
           )}
 
+          {/* ─── ÉTAPE 2 : Date + Créneau + Catégorie ─── */}
           {step === 2 && (
             <div className="flex flex-col md:flex-row gap-12">
+
+              {/* Calendrier */}
               <div className="flex-1">
                 <div className="flex justify-between items-center mb-8">
                   <h2 className="text-sm font-bold text-stone-700 uppercase tracking-widest">{months[viewDate.getMonth()]} {viewDate.getFullYear()}</h2>
@@ -176,30 +221,25 @@ export default function Booking() {
                     <button onClick={() => changeMonth(1)} className="text-stone-400 hover:text-stone-800 transition-colors text-xl">→</button>
                   </div>
                 </div>
-
                 <div className="grid grid-cols-7 gap-2 mb-4 text-center">
                   {daysOfWeek.map(d => <span key={d} className="text-[10px] font-bold text-stone-300 uppercase tracking-widest">{d}</span>)}
                 </div>
-                
                 <div className="grid grid-cols-7 gap-3">
                   {Array.from({ length: getFirstDayOfMonth(viewDate.getFullYear(), viewDate.getMonth()) }).map((_, i) => <div key={`empty-${i}`} />)}
-                  
                   {Array.from({ length: getDaysInMonth(viewDate.getFullYear(), viewDate.getMonth()) }).map((_, i) => {
                     const day = i + 1;
                     const dateStr = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
                     const dateObj = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
-                    const isClosed = dateObj.getDay() === 0 || dateObj.getDay() === 1;
+                    const isClosed = !DAY_SLOTS[dateObj.getDay()];
                     const isBlocked = blockedDates.includes(dateStr) || isClosed;
                     const isSelected = selectedDate === dateStr;
-
                     return (
                       <button
                         key={day}
                         disabled={isBlocked}
                         onClick={() => handleDayClick(day)}
                         className={`h-10 w-10 rounded-full flex items-center justify-center text-xs transition-all duration-300 mx-auto
-                          ${isSelected ? 'bg-stone-800 text-white shadow-lg scale-110 font-bold' : isBlocked ? 'text-stone-200 cursor-not-allowed' : 'text-stone-600 hover:bg-stone-100'}
-                        `}
+                          ${isSelected ? 'bg-stone-800 text-white shadow-lg scale-110 font-bold' : isBlocked ? 'text-stone-200 cursor-not-allowed' : 'text-stone-600 hover:bg-stone-100'}`}
                       >
                         {day}
                       </button>
@@ -208,34 +248,83 @@ export default function Booking() {
                 </div>
               </div>
 
+              {/* Créneaux + Catégories */}
               <div className="flex-1 border-l border-stone-100 md:pl-10">
-                 {!selectedDate ? (
-                   <div className="h-full flex flex-col items-center justify-center text-stone-300 space-y-4 opacity-50">
-                     <p className="text-[10px] uppercase tracking-widest font-bold">Sélectionnez une date</p>
-                   </div>
-                 ) : (
-                   <div className="animate-fade-in">
-                     <h3 className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-8 text-center">Horaires disponibles</h3>
-                     <div className="grid grid-cols-2 gap-3">
-                       {timeSlots.map(time => (
-                         <button key={time} onClick={() => setSelectedTime(time)} className={`py-4 rounded-xl text-xs font-bold transition-all border ${selectedTime === time ? 'bg-stone-800 text-white border-stone-800 shadow-md' : 'bg-white text-stone-500 border-stone-100 hover:border-stone-300'}`}>{time}</button>
-                       ))}
-                     </div>
-                     <button onClick={handleDateSubmit} disabled={!selectedTime} className={`w-full mt-10 py-4 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] transition-all ${selectedTime ? 'bg-stone-800 text-white hover:bg-stone-700' : 'bg-stone-100 text-stone-300 cursor-not-allowed'}`}>Confirmer l'horaire</button>
-                   </div>
-                 )}
+                {!selectedDate ? (
+                  <div className="h-full flex flex-col items-center justify-center text-stone-300 opacity-50">
+                    <p className="text-[10px] uppercase tracking-widest font-bold">Sélectionnez une date</p>
+                  </div>
+                ) : (
+                  <div className="animate-fade-in">
+                    <h3 className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-6 text-center">Créneaux disponibles</h3>
+                    <div className="space-y-3">
+                      {timeSlots.map(time => {
+                        const avail = getSlotAvailability(time);
+                        if (!avail || (avail.postop === 0 && avail.autre === 0)) return null;
+                        return (
+                          <div key={time} className="border border-stone-100 rounded-xl p-3 bg-stone-50/50">
+                            <p className="text-xs font-bold text-stone-700 mb-2">{time}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {avail.postop > 0 && (
+                                <button
+                                  onClick={() => { setSelectedTime(time); setSelectedCategory('postop'); }}
+                                  className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                    selectedTime === time && selectedCategory === 'postop'
+                                      ? 'bg-stone-800 text-white border-stone-800 shadow-md'
+                                      : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
+                                  }`}
+                                >
+                                  Post-opératoire
+                                  <span className="ml-1 opacity-60">({avail.postop})</span>
+                                </button>
+                              )}
+                              {avail.autre > 0 && (
+                                <button
+                                  onClick={() => { setSelectedTime(time); setSelectedCategory('autre'); }}
+                                  className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                    selectedTime === time && selectedCategory === 'autre'
+                                      ? 'bg-stone-800 text-white border-stone-800 shadow-md'
+                                      : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
+                                  }`}
+                                >
+                                  Autre
+                                  <span className="ml-1 opacity-60">({avail.autre})</span>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <button
+                      onClick={handleDateSubmit}
+                      disabled={!selectedTime || !selectedCategory}
+                      className={`w-full mt-8 py-4 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] transition-all ${
+                        selectedTime && selectedCategory
+                          ? 'bg-stone-800 text-white hover:bg-stone-700'
+                          : 'bg-stone-100 text-stone-300 cursor-not-allowed'
+                      }`}
+                    >
+                      Confirmer le créneau
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
+          {/* ─── ÉTAPE 3 : Récapitulatif & Paiement ─── */}
           {step === 3 && (
             <div className="text-center max-w-md mx-auto">
               <h2 className="text-sm font-bold text-stone-400 mb-10 uppercase tracking-[0.3em]">Récapitulatif & Acompte</h2>
               <div className="bg-stone-50 rounded-2xl p-8 mb-10 border border-stone-100">
-                <p className="text-stone-800 font-bold text-sm uppercase tracking-widest mb-2 capitalize">
-                  {new Date(selectedDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                <p className="text-stone-800 font-bold text-sm uppercase tracking-widest mb-1 capitalize">
+                  {new Date(selectedDate + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
                 </p>
-                <p className="text-stone-500 text-4xl font-light mb-8">{selectedTime}</p>
+                <p className="text-stone-500 text-4xl font-light mb-2">{selectedTime}</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-stone-400 font-bold mb-8">
+                  {CATEGORY_LABELS[selectedCategory]}
+                </p>
                 <div className="border-t border-stone-200 pt-6 flex justify-between items-center">
                   <span className="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Acompte sécurisé</span>
                   <span className="font-bold text-stone-800">50,00 €</span>
