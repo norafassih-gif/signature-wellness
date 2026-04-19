@@ -105,11 +105,9 @@ export default function SoinsVisage() {
 
            {/* LISTE DE PRIX ÉPURÉE */}
            <div className="space-y-0 bg-white shadow-xl border border-[#e7e5e4] p-8 md:p-12">
-              <PriceItem name="Soin Signature (30 min)" price="149€" />
-              <PriceItem name="Soin Deluxe (45 min)" price="180€" />
-              <PriceItem name="Soin Platinum (60 min)" price="220€" />
-              {/* J'ai ajouté le Booster en option, souvent demandé */}
-              <PriceItem name="Booster Lèvres ou Yeux (Option)" price="50€" />
+              <PriceItem name="Soin Signature Hydraface (60 min)" price="200€" />
+              <PriceItem name="Soin Deluxe (90 min) — Hydraface + Skin Booster + Aqua Glow" price="250€" />
+              <PriceItem name="Soin Platinum (120 min) — Hydraface + Needling + Skin Booster + Luminothérapie" price="300€" />
            </div>
            
            <div className="text-center mt-10">

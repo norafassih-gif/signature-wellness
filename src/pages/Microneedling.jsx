@@ -113,13 +113,6 @@ export default function Microneedling() {
                 <div className="space-y-0">
                    <PriceItem name="Needling Classique" price="150€" />
                    <PriceItem name="Hydraneedling" price="250€" />
-                   <PriceItem name="Natural Peel" price="250€" />
-                   <PriceItem name="Regeneration Peel" price="350€" />
-                   <PriceItem name="Clear Peel / Clarity Peel" price="dès 330€" />
-                   <PriceItem name="Exosomes Full Face" price="350€" />
-                   <PriceItem name="Exosomes Full Face + Décolleté" price="450€" />
-                   <PriceItem name="PRP Full Face" price="250€" />
-                   <PriceItem name="PRP + Exosomes Full Face" price="450€" />
                 </div>
               </div>
 
@@ -130,30 +123,30 @@ export default function Microneedling() {
                 </h3>
                 <div className="space-y-0">
                    <PriceItem name="PDRN (ADN Saumon)" price="350€" />
-                   <PriceItem name="Eyes Repair (Cernes)" price="200€" />
-                   <PriceItem name="Collagen Booster" price="350€" />
-                   <PriceItem name="PRF (Fibrine)" price="350€" />
-                   <PriceItem name="Perfusion de Vitamines" price="300€" />
-                   <PriceItem name="Glutathion Perf" price="300€" />
-                   <PriceItem name="Cure Glutathion (8 séances)" price="1800€" />
+                   <PriceItem name="Eyes Repair Glutathion (Cernes)" price="250€" />
+                   <PriceItem name="Collagen Booster Glutathion — Visage, Cou, Décolleté, Mains" price="350€" />
                 </div>
               </div>
 
               {/* CATEGORIE 3 : CAPILLAIRE */}
-              <div>
+              <div className="mb-16">
                 <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
                    Traitements Capillaires
                 </h3>
                 <div className="space-y-0">
                    <PriceItem name="Cocktail Activateur de Pousse" price="120€" />
                    <PriceItem name="Traitement de Pelade" price="200€" />
-                   <PriceItem name="PRP Cheveux" price="250€" />
                    <PriceItem name="Exosomes Cheveux" price="350€" />
-                   <PriceItem name="PRP + Exosomes" price="450€" />
-                   <div className="mt-8 pt-4 border-t border-dotted border-[#e7e5e4]">
-                      <PriceItem name="Cure PRP (5 séances)" price="1000€" />
-                      <PriceItem name="Cure Exosomes (5 séances)" price="1400€" />
-                   </div>
+                </div>
+              </div>
+
+              {/* CATEGORIE 4 : ÉPILATION */}
+              <div>
+                <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
+                   Épilation Définitive
+                </h3>
+                <div className="text-center py-4">
+                  <span className="text-[#57534e] text-sm uppercase tracking-widest font-medium">Sur Rendez-vous</span>
                 </div>
               </div>
 

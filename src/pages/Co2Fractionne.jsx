@@ -60,7 +60,12 @@ export default function Co2Fractionne() {
               <div className="border-b border-[#e7e5e4] pb-6">
                 <div className="flex justify-between items-baseline mb-2">
                   <h3 className="text-lg font-bold text-[#57534e] uppercase tracking-wider">Laser CO2 Fractionné</h3>
-                  <span className="text-[#78716c] font-medium tracking-widest">250€ - 450€</span>
+                </div>
+                <div className="flex justify-between text-sm text-[#78716c] font-medium tracking-widest mb-1">
+                  <span>Petites zones</span><span>250€</span>
+                </div>
+                <div className="flex justify-between text-sm text-[#78716c] font-medium tracking-widest mb-2">
+                  <span>Grandes zones</span><span>450€</span>
                 </div>
                 <p className="text-sm text-[#78716c] font-light leading-relaxed">
                   Le traitement de référence pour le relissage cutané, la réduction des rides profondes, des cicatrices d'acné et des vergetures. Stimule la production de collagène de manière spectaculaire.
@@ -70,7 +75,7 @@ export default function Co2Fractionne() {
               <div className="border-b border-[#e7e5e4] pb-6">
                 <div className="flex justify-between items-baseline mb-2">
                   <h3 className="text-lg font-bold text-[#57534e] uppercase tracking-wider">Carboxythérapie</h3>
-                  <span className="text-[#78716c] font-medium tracking-widest">300€</span>
+                  <span className="text-[#78716c] font-medium tracking-widest">250€</span>
                 </div>
                 <p className="text-sm text-[#78716c] font-light leading-relaxed">
                   Infusion de CO2 stérile sous la peau pour forcer l'oxygénation des tissus. Idéal pour traiter les cernes foncés, la cellulite, la perte de tonicité et stimuler la microcirculation.
@@ -100,7 +105,7 @@ export default function Co2Fractionne() {
               <div className="border-b border-[#e7e5e4] pb-6">
                 <div className="flex justify-between items-baseline mb-2">
                   <h3 className="text-lg font-bold text-[#57534e] uppercase tracking-wider">Plasma Froid</h3>
-                  <span className="text-[#78716c] font-medium tracking-widest">300€</span>
+                  <span className="text-[#78716c] font-medium tracking-widest">250€</span>
                 </div>
                 <p className="text-sm text-[#78716c] font-light leading-relaxed">
                   Technologie révolutionnaire sans contact ni chaleur. Action hautement bactéricide contre l'acné, apaisement des peaux réactives et ouverture des canaux cellulaires pour une pénétration extrême des actifs.

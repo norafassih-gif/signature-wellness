@@ -106,9 +106,8 @@ export default function Massages() {
               
               <div className="mb-8">
                 <PriceItem name="Drainage Lymphatique Corps" price="150€" />
-                <PriceItem name="Madérothérapie (Remodelage)" price="90€" />
-                <PriceItem name="Miracle Face (Drainage Visage)" price="80€" />
-                <PriceItem name="Massage Relaxant (1h)" price="100€" />
+                <PriceItem name="Madérothérapie (Remodelage)" price="150€" />
+                <PriceItem name="Miracle Face (Drainage Visage)" price="120€" />
               </div>
 
               {/* SECTION CURES */}
@@ -116,8 +115,8 @@ export default function Massages() {
                 <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 mt-12 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
                    Les Cures
                 </h3>
-                <PriceItem name="Cure 5 Séances (Drainage)" price="650€" />
-                <PriceItem name="Cure 10 Séances (Madérothérapie)" price="800€" />
+                <PriceItem name="Cure 6 Séances (Drainage)" price="750€" />
+                <PriceItem name="Cure 10 Séances (Madérothérapie)" price="1200€" />
               </div>
 
            </div>

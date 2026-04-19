@@ -106,11 +106,11 @@ export default function BodyContouring() {
                 <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
                    Cicatrices & Imperfections
                 </h3>
-                <PriceItem name="Traitement de Chéloïdes" price="à partir de 80€" />
-                <PriceItem name="Traitement Cicatrice (Needling)" price="à partir de 120€" />
-                <PriceItem name="Traitement Cicatrice (Laser CO2)" price="à partir de 250€" />
-                <PriceItem name="Carboxythérapie Cicatrice" price="à partir de 200€" />
-                <PriceItem name="Traitement Accrochordons" price="à partir de 150€" />
+                <PriceItem name="Traitement de Chéloïdes" price="150€" />
+                <PriceItem name="Traitement Cicatrice (Needling)" price="180€" />
+                <PriceItem name="Traitement Cicatrice (Laser CO2)" price="250€" />
+                <PriceItem name="Carboxythérapie Cicatrice" price="250€" />
+                <PriceItem name="Traitement Accrochordons" price="150€" />
               </div>
 
               {/* GROUPE 2 : VERGETURES & PEELING */}
@@ -118,10 +118,13 @@ export default function BodyContouring() {
                 <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 mt-12 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
                    Vergetures & Peeling
                 </h3>
-                <PriceItem name="Traitement Vergetures (Needling)" price="à partir de 200€" />
-                <PriceItem name="Traitement Vergetures (Laser CO2)" price="à partir de 250€" />
-                <PriceItem name="Peeling Corps" price="à partir de 250€" />
+                <PriceItem name="Traitement Vergetures (Needling)" price="200€" />
+                <PriceItem name="Traitement Vergetures (Laser CO2)" price="250€" />
+                <PriceItem name="Peeling Corps" price="250€" />
                 <PriceItem name="Peeling Parties Intimes" price="300€" />
+                <PriceItem name="Natural Peel" price="250€" />
+                <PriceItem name="Regeneration Peel" price="250€" />
+                <PriceItem name="Clear Peel" price="350€" />
               </div>
 
            </div>
