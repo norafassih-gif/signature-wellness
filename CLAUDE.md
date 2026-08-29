@@ -44,39 +44,54 @@ Collections Firestore : `appointments`, `schedule_exceptions`, `comptabilite`.
 - Angles droits sur la vitrine, arrondis sur les modules applicatifs (réservation, admin).
 - Tout est en français, y compris les noms de variables des modules récents.
 
-## ⚠️ À traiter avant toute évolution
+## État au 29/08/2026
+
+Site en ligne sur **https://www.signaturewellness.fr** — toute modification part en production via Vercel.
 
 Audit complet du 27/08/2026 :
 https://claude.ai/code/artifact/ffa51a42-09c0-4712-a2f4-c20da781451d
 
-**Bloquants**
+### Déjà corrigé (ne pas refaire)
 
-1. `/login` propose une inscription publique et `/admin` ne vérifie que « connecté ».
-   → n'importe qui accède aux coordonnées de toutes les clientes.
-2. `/comptabilite` n'a **aucune** garde d'authentification. `ADMIN_CODE = "SW2026&"`
-   est en clair dans le bundle et ne protège que remises et suppressions.
-3. Aucune règle Firestore versionnée — à vérifier en priorité dans la console Firebase.
-4. L'acompte n'est pas vérifié : `PaymentButton` ouvre paypal.me puis un bouton
-   « Confirmer » crée le RDV avec `paid: true`, payé ou non.
-5. EmailJS est encore sur `YOUR_SERVICE_ID` → aucun mail de confirmation ne part,
-   alors que l'écran de fin l'annonce à la cliente.
-6. Réservation possible dans le passé ; pas de transaction anti-double-réservation.
+- **Règles Firestore** : étaient `allow read, write: if true`. Remplacées le 29/08 par des règles
+  par collection. `comptabilite` est réservé à l'UID `EQIW1yJpSvS7VSoRl8XxMqxGCs42`.
+  `appointments` et `schedule_exceptions` restent en lecture publique (le tunnel de réservation
+  en a besoin) mais update/delete sont réservés à l'admin.
+- **Login.jsx** : création de compte publique supprimée, redirection vers `/admin`.
+- **Comptabilite.jsx** : garde `onAuthStateChanged` + contrôle de l'UID, comme Admin.jsx.
+- **Booking.jsx** : les dates passées ne sont plus réservables.
+- **ScrollToTop** global monté dans App.jsx ; page 404 sur `path="*"`.
+- **index.html** : titre, `lang="fr"`, favicon, description, Open Graph + og-image, canonical.
+  `public/robots.txt` et `public/sitemap.xml` ajoutés.
+- **Animations** : `animate-fade-in` / `animate-fade-in-up` définies dans index.css, pause du
+  carrousel via `.carousel-track`, doublon `marquee` retiré de tailwind.config.js,
+  `prefers-reduced-motion` respecté.
 
-**Incohérences**
+### Reste à traiter, par ordre de gravité
 
-- 7 écarts de tarifs entre les pages publiques et la grille de `Comptabilite.jsx`
-  (ex. Soin Signature 200 €/60 min sur le site vs 149 €/30 min en caisse).
-- `/co2-fractionne` ne propose pas de CO2 fractionné (carte = HIFU, Carboxy, Plasma).
-- Le soin visage porte 3 noms : Hydraface / Soin Hydro-Expert / Soin Signature Hydraface.
-- 3 adresses email différentes (academy / paris / agenda).
-- Pas de `ScrollToTop` global : 5 pages s'ouvrent au milieu.
-- 9,5 Mo d'images, dont 12 inutilisées ; classes `animate-fade-in(-up)` jamais définies ;
-  police Inter déclarée dans Tailwind mais jamais chargée.
+1. **Acompte non vérifié** — `PaymentButton` ouvre paypal.me puis un bouton « Confirmer » crée
+   le RDV avec `paid: true`, payé ou non. Décision à prendre : supprimer l'acompte, ou Stripe Checkout.
+2. **Email de confirmation** — EmailJS encore sur `YOUR_SERVICE_ID` : aucun mail ne part, alors que
+   l'écran de fin l'annonce à la cliente.
+3. **Fuite de données via les disponibilités** — `Booking.jsx` lit les documents complets de
+   `appointments` pour calculer les créneaux libres, donc nom, téléphone et email des clientes sont
+   lisibles publiquement. Correctif : une collection de créneaux sans données personnelles.
+   Tant que ce n'est pas fait, la règle Firestore ne peut pas être resserrée.
+4. **Pas de transaction anti-double-réservation** — deux clientes peuvent prendre la dernière place.
+5. **Admin.jsx** ne vérifie que « connecté », pas l'UID. Risque faible depuis la suppression de
+   l'inscription publique, mais à aligner sur Comptabilite.jsx.
+6. **Tarifs incohérents** — 7 écarts entre les pages publiques et la grille de `Comptabilite.jsx`
+   (ex. Soin Signature 200 €/60 min sur le site vs 149 €/30 min en caisse). Une seule source de vérité à créer.
+7. **Page `/co2-fractionne`** ne propose pas de CO2 fractionné (carte = HIFU, Carboxy, Plasma).
+8. **Soin visage nommé de 3 façons** : Hydraface / Soin Hydro-Expert / Soin Signature Hydraface.
+9. **3 adresses email** différentes (academy / paris / agenda).
+10. **9,5 Mo d'images** non optimisées, dont 12 inutilisées ; aucun `loading="lazy"`.
 
-**État du dépôt au 27/08/2026** — dernier commit `febd29b` (19/04/2026), et 5 fichiers
-modifiés non commités : `PaymentButton.jsx`, `BodyContouring.jsx`, `Co2Fractionne.jsx`,
-`Microneedling.jsx`, `MiracleSculpt.jsx`. **Le site en ligne diffère du local.**
-Trancher cette question avant toute autre modification.
+### Fichiers modifiés jamais envoyés
+
+`PaymentButton.jsx`, `BodyContouring.jsx`, `Co2Fractionne.jsx`, `Microneedling.jsx`,
+`MiracleSculpt.jsx` — modifications d'avril 2026 (tarifs corps + remplacement du module PayPal
+par un lien paypal.me). Volontairement laissés de côté : à valider avec Nora avant mise en ligne.
 
 ## Qualiopi
 

@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner'; // <--- AJOUT DE L'IMPORT ICI
+import ScrollToTop from './components/ScrollToTop';
 
 // IMPORTS DES PAGES
 import Home from './pages/Home';
@@ -17,6 +18,7 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Booking from './pages/Booking';
 import MentionsLegales from './pages/MentionsLegales'; 
+import NotFound from './pages/NotFound';
 import Comptabilite from './pages/Comptabilite'; // <--- NOUVEL IMPORT DE LA PAGE COMPTABILITE
 
 // LES PRESTATIONS AJOUTEES
@@ -39,6 +41,7 @@ import FormationHifu from './pages/FormationHifu';
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
+      <ScrollToTop />
       <Navbar />
       
       <main className="flex-grow">
@@ -75,6 +78,9 @@ function App() {
           
           {/* Page Légale */}
           <Route path="/mentions-legales" element={<MentionsLegales />} />
+
+          {/* Toute adresse inconnue */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 

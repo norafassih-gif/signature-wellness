@@ -12,11 +12,10 @@ export default {
         'clinic-gray': '#F9F9F9',   // Un fond gris très pâle "propre"
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Police moderne et lisible
+        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       // --- AJOUT DES ANIMATIONS ICI ---
       animation: {
-        'marquee': 'marquee 25s linear infinite',
         'float': 'float 6s ease-in-out infinite',
         'float-delay': 'float 6s ease-in-out 3s infinite',
         'carousel': 'carousel 30s linear infinite',

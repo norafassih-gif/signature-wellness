@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /comptabilite
+Disallow: /login
+
+Sitemap: https://www.signaturewellness.fr/sitemap.xml

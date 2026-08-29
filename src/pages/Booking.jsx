@@ -97,6 +97,13 @@ export default function Booking() {
       .catch(err => console.log("Erreur email :", err));
   };
 
+  // --- Une date antérieure à aujourd'hui n'est jamais réservable ---
+  const estPasse = (dateObj) => {
+    const aujourdhui = new Date();
+    aujourdhui.setHours(0, 0, 0, 0);
+    return dateObj < aujourdhui;
+  };
+
   const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year, month) => {
     const day = new Date(year, month, 1).getDay();
@@ -108,7 +115,7 @@ export default function Booking() {
     const month = viewDate.getMonth();
     const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     const dayOfWeek = new Date(year, month, day).getDay();
-    if (blockedDates.includes(dateStr) || !DAY_SLOTS[dayOfWeek]) return;
+    if (blockedDates.includes(dateStr) || !DAY_SLOTS[dayOfWeek] || estPasse(new Date(year, month, day))) return;
     setSelectedDate(dateStr);
     setSelectedTime('');
     setSelectedCategory('');
@@ -231,7 +238,7 @@ export default function Booking() {
                     const dateStr = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
                     const dateObj = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
                     const isClosed = !DAY_SLOTS[dateObj.getDay()];
-                    const isBlocked = blockedDates.includes(dateStr) || isClosed;
+                    const isBlocked = blockedDates.includes(dateStr) || isClosed || estPasse(dateObj);
                     const isSelected = selectedDate === dateStr;
                     return (
                       <button

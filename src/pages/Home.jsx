@@ -213,7 +213,7 @@ export default function Home() {
             </a>
          </div>
          <div className="relative flex overflow-x-hidden group border-t border-[#e7e5e4] pt-2">
-           <div className="flex animate-carousel whitespace-nowrap group-hover:pause">
+           <div className="flex carousel-track whitespace-nowrap">
              {instagramPhotos.map((img, idx) => (
                <img key={`first-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer grayscale hover:grayscale-0 duration-700" alt="Gallery" />
              ))}
