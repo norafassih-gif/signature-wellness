@@ -27,7 +27,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { auth, db } from '../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import {
   collection, addDoc, getDocs, deleteDoc,
@@ -579,6 +579,16 @@ export default function Comptabilite() {
         {[['caisse','Encaissement'],['recap','Récapitulatif'],['calendar','Agenda']].map(([k,v]) => (
           <button key={k} onClick={() => setOnglet(k)} style={onglet === k ? s.tabActive : s.tabInact}>{v}</button>
         ))}
+
+        <div style={{ flex: 1 }} />
+
+        <button
+          onClick={async () => { await signOut(auth); navigate('/'); }}
+          style={{ ...s.btnGhost, alignSelf: 'center', marginLeft: 16 }}
+          title="Se déconnecter"
+        >
+          Déconnexion
+        </button>
       </div>
 
       {/* ── BARRE DE FILTRE ────────────────────────────────────────────────── */}
