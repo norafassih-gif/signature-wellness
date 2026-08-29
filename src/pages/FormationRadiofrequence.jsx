@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import imgFormation from '../assets/Radiofrequence et cavitation.png';
+import imgFormation from '../assets/radiofrequence-et-cavitation.jpg';
 
 export default function FormationRadiofrequence() {
   
@@ -33,7 +33,7 @@ export default function FormationRadiofrequence() {
 
         {/* PHOTO DE FORMATION */}
         <div className="max-w-4xl mx-auto h-[400px] md:h-[500px] overflow-hidden shadow-2xl mb-16">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgFormation} 
                 alt="Formation Radiofréquence et Cavitation" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"

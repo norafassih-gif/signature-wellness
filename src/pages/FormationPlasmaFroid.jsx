@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 // J'ai mis à jour le nom de l'image tel que tu l'as demandé
-import imgFormation from '../assets/soin-plasma.png';
+import imgFormation from '../assets/soin-plasma.jpg';
 
 export default function FormationPlasmaFroid() {
   
@@ -34,7 +34,7 @@ export default function FormationPlasmaFroid() {
 
         {/* PHOTO DE FORMATION */}
         <div className="max-w-4xl mx-auto h-[400px] md:h-[500px] overflow-hidden shadow-2xl mb-16">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgFormation} 
                 alt="Formation Plasma Froid Fusion" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"

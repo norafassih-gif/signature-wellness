@@ -76,7 +76,7 @@ export default function BodyContouring() {
 
           {/* IMAGE FLOTTANTE */}
           <div className="md:w-1/2 w-full h-[600px] reveal">
-             <img 
+             <img loading="lazy" decoding="async" 
                src={imgBody} 
                alt="Traitement Corps et Cicatrices" 
                className="w-full h-full object-cover shadow-2xl animate-float" 

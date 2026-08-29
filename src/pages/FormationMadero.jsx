@@ -34,7 +34,7 @@ export default function FormationMadero() {
 
         {/* PHOTO DE FORMATION */}
         <div className="max-w-4xl mx-auto h-[400px] md:h-[500px] overflow-hidden shadow-2xl mb-16">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgFormation} 
                 alt="Formation Madérothérapie" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"

@@ -79,7 +79,7 @@ export default function Massages() {
 
           {/* IMAGE FLOTTANTE */}
           <div className="md:w-1/2 w-full h-[600px] reveal">
-             <img 
+             <img loading="lazy" decoding="async" 
                src={imgMassage} 
                alt="Massage et Détente" 
                className="w-full h-full object-cover shadow-2xl animate-float" 

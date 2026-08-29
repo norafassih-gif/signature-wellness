@@ -37,7 +37,7 @@ export default function MiracleSculpt() {
 
         {/* PHOTO PRINCIPALE */}
         <div className="max-w-5xl mx-auto h-[400px] md:h-[600px] overflow-hidden shadow-2xl mb-24">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgMain} 
                 alt="Remodelage Corporel" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
@@ -145,14 +145,14 @@ export default function MiracleSculpt() {
         {/* DOUBLE IMAGE */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
           <div className="h-[300px] md:h-[400px] overflow-hidden shadow-lg">
-            <img
+            <img loading="lazy" decoding="async"
                 src={imgMadero}
                 alt="Madérothérapie"
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
             />
           </div>
           <div className="h-[300px] md:h-[400px] overflow-hidden shadow-lg">
-            <img
+            <img loading="lazy" decoding="async"
                 src={imgJambe}
                 alt="Soin Jambes Lourdes"
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"

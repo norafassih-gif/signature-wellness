@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 // Importation de la photo
-import imgFormation from '../assets/formation-massage.png';
+import imgFormation from '../assets/formation-massage.jpg';
 
 export default function FormationDrainage() {
   
@@ -34,7 +34,7 @@ export default function FormationDrainage() {
 
         {/* PHOTO DE FORMATION AJOUTÉE ICI */}
         <div className="max-w-4xl mx-auto h-[400px] md:h-[500px] overflow-hidden shadow-2xl mb-16">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgFormation} 
                 alt="Formation Massage Post Opératoire" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"

@@ -46,82 +46,100 @@ const NOM_ETABLISSEMENT = "Signature Wellness"; // ← Affiché sur les exports 
 // ═══════════════════════════════════════════════════════════════════════════════
 //  LISTE COMPLÈTE DES PRESTATIONS
 // ═══════════════════════════════════════════════════════════════════════════════
+// Source de vérité : la grille "Price List" publiée sur l'Instagram Signature Wellness.
+// libre: true  => le montant est saisissable à l'encaissement ("à partir de" ou "sur devis").
 const PRESTATIONS = [
-  // ── Soins Visage & Peelings ───────────────────────────────────────────────
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "SOIN SIGNATURE (30 MIN)",              prix: 149 },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "SOIN DELUXE (45 MIN)",                 prix: 180 },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "SOIN PLATINUM (60 MIN)",               prix: 220 },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "BOOSTER LÈVRES OU YEUX (OPTION)",      prix: 50  },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "NEEDLING CLASSIQUE",                   prix: 150 },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "HYDRANEEDLING",                        prix: 250 },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "NATURAL PEEL",                         prix: 250 },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "REGENERATION PEEL",                    prix: 350 },
-  { cat: "SOINS VISAGE & PEELINGS",              nom: "CLEAR PEEL / CLARITY PEEL",            prix: 330 },
+  // ── Dermocosmétique visage ────────────────────────────────────────────────
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "HYDRAFACE",                              prix: 200 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "HYDRANEEDLING",                          prix: 250 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "NEEDLING",                               prix: 150 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "NATURAL PEEL",                           prix: 250 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "REGENERATION PEEL",                      prix: 350 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "CLEAR PEEL",                             prix: 330 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "CLARITY PEEL",                           prix: 370 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "SOIN DELUXE (90 MIN)",                   prix: 250 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "SOIN PLATINUM (120 MIN)",                prix: 300 },
+  { cat: "DERMOCOSMÉTIQUE VISAGE",      nom: "BOOSTER LÈVRES OU YEUX (OPTION)",        prix: 50  },
 
-  // ── Injections & Mésothérapie Visage ─────────────────────────────────────
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "EXOSOMES FULL FACE",                   prix: 350 },
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "EXOSOMES FULL FACE + DÉCOLLETÉ",       prix: 450 },
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "PRP FULL FACE",                        prix: 250 },
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "PRP + EXOSOMES FULL FACE",             prix: 450 },
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "PDRN (ADN SAUMON)",                    prix: 350 },
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "EYES REPAIR (CERNES)",                 prix: 200 },
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "COLLAGEN BOOSTER",                     prix: 350 },
-  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE",     nom: "PRF (FIBRINE)",                        prix: 350 },
+  // ── Injections & mésothérapie visage ──────────────────────────────────────
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "VITAMINES FULL FACE",               prix: 250 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "VITAMINES + EXOSOMES FULL FACE",    prix: 450 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "EXOSOMES FULL FACE",                prix: 350 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "EXOSOMES FULL FACE + DÉCOLLETÉ",    prix: 450 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "PDRN (ADN SAUMON)",                 prix: 350 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "EYES REPAIR (CERNES)",              prix: 200 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "CURE 3 SÉANCES EYES REPAIR",        prix: 500 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "COLLAGEN BOOSTER",                  prix: 350 },
+  { cat: "INJECTIONS & MÉSOTHÉRAPIE VISAGE", nom: "PRF (FIBRINE)",                     prix: 350 },
 
-  // ── Perfusions & Vitamines ────────────────────────────────────────────────
-  { cat: "PERFUSIONS & VITAMINES",               nom: "PERFUSION DE VITAMINES",               prix: 300 },
-  { cat: "PERFUSIONS & VITAMINES",               nom: "GLUTATHION PERF",                      prix: 300 },
-  { cat: "PERFUSIONS & VITAMINES",               nom: "CURE GLUTATHION (8 SÉANCES)",          prix: 1800 },
+  // ── Perfusions & vitamines ────────────────────────────────────────────────
+  { cat: "PERFUSIONS & VITAMINES",      nom: "PERFUSION DE VITAMINES",                 prix: 300 },
+  { cat: "PERFUSIONS & VITAMINES",      nom: "GLUTATHION",                             prix: 300 },
+  { cat: "PERFUSIONS & VITAMINES",      nom: "CURE 8 SÉANCES GLUTATHION",              prix: 1800 },
 
-  // ── Traitements Capillaires ───────────────────────────────────────────────
-  { cat: "TRAITEMENTS CAPILLAIRES",              nom: "COCKTAIL ACTIVATEUR DE POUSSE",        prix: 120 },
-  { cat: "TRAITEMENTS CAPILLAIRES",              nom: "TRAITEMENT DE PELADE",                 prix: 200 },
-  { cat: "TRAITEMENTS CAPILLAIRES",              nom: "PRP CHEVEUX",                          prix: 250 },
-  { cat: "TRAITEMENTS CAPILLAIRES",              nom: "EXOSOMES CHEVEUX",                     prix: 350 },
-  { cat: "TRAITEMENTS CAPILLAIRES",              nom: "PRP + EXOSOMES CHEVEUX",               prix: 450 },
-  { cat: "TRAITEMENTS CAPILLAIRES",              nom: "CURE PRP (5 SÉANCES)",                 prix: 1000 },
-  { cat: "TRAITEMENTS CAPILLAIRES",              nom: "CURE EXOSOMES (5 SÉANCES)",            prix: 1400 },
+  // ── Traitements capillaires ───────────────────────────────────────────────
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "VITAMINES",                              prix: 250 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "VITAMINES + EXOSOMES",                   prix: 450 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "EXOSOMES",                               prix: 350 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "TRAITEMENT DE PELADE",                   prix: 200 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "COCKTAIL ACTIVATEUR DE POUSSE",          prix: 120 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "CURE 5 SÉANCES VITAMINES",               prix: 1000 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "CURE 5 SÉANCES VITAMINES + EXOSOMES",    prix: 1650 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "CURE 5 SÉANCES EXOSOMES",                prix: 1400 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "CURE 5 SÉANCES TRAITEMENT DE PELADE",    prix: 1000 },
+  { cat: "TRAITEMENTS CAPILLAIRES",     nom: "CURE 8 SÉANCES ACTIVATEUR DE POUSSE",    prix: 800 },
 
-  // ── Cicatrices, Vergetures & Imperfections ────────────────────────────────
-  { cat: "CICATRICES, VERGETURES & IMPERFECTIONS", nom: "TRAITEMENT DE CHÉLOÏDES",            prix: 150 },
-  { cat: "CICATRICES, VERGETURES & IMPERFECTIONS", nom: "TRAITEMENT CICATRICE (NEEDLING)",    prix: 150 },
-  { cat: "CICATRICES, VERGETURES & IMPERFECTIONS", nom: "TRAITEMENT CICATRICE (LASER CO2)",   prix: 250 },
-  { cat: "CICATRICES, VERGETURES & IMPERFECTIONS", nom: "CARBOXYTHÉRAPIE CICATRICE",          prix: 200 },
-  { cat: "CICATRICES, VERGETURES & IMPERFECTIONS", nom: "TRAITEMENT ACCROCHORDONS",           prix: 150 },
-  { cat: "CICATRICES, VERGETURES & IMPERFECTIONS", nom: "TRAITEMENT VERGETURES (NEEDLING)",   prix: 200 },
-  { cat: "CICATRICES, VERGETURES & IMPERFECTIONS", nom: "TRAITEMENT VERGETURES (LASER CO2)",  prix: 250 },
+  // ── Imperfections corps (tarifs "à partir de" : montant saisissable) ──────
+  { cat: "IMPERFECTIONS CORPS",         nom: "TRAITEMENT DE CHÉLOÏDES",                prix: 80,  libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "CICATRICE PAR NEEDLING",                 prix: 120, libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "CICATRICE PAR MICROABRASION",            prix: 250, libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "CICATRICE PAR CARBOXYTHÉRAPIE",          prix: 200, libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "TRAITEMENT ACCROCHORDONS",               prix: 150, libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "VERGETURES PAR NEEDLING",                prix: 200, libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "VERGETURES PAR MICROABRASION",           prix: 250, libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "PEELING CORPS",                          prix: 250, libre: true },
+  { cat: "IMPERFECTIONS CORPS",         nom: "PEELING PARTIES INTIMES",                prix: 300 },
 
-  // ── Haute Technologie & Lasers ────────────────────────────────────────────
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "LASER CO2 FRACTIONNÉ",                 prix: 450 },
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "CARBOXYTHÉRAPIE",                      prix: 300 },
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "HIFU VISAGE",                          prix: 250 },
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "HIFU CORPS",                           prix: 350 },
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "PLASMA FROID",                         prix: 300 },
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "RADIOFRÉQUENCE & CAVITATION",          prix: 150 },
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "ONDES DE CHOC",                        prix: 150 },
-  { cat: "HAUTE TECHNOLOGIE & LASERS",           nom: "ULTRASONS",                            prix: 150 },
+  // ── Épilation (sur devis : montant saisissable) ───────────────────────────
+  { cat: "ÉPILATION",                   nom: "LASER ÉPILATION (SUR DEVIS)",            prix: 0,   libre: true },
+  { cat: "ÉPILATION",                   nom: "ÉLECTROLYSE (SUR DEVIS)",                prix: 0,   libre: true },
 
-  // ── Remodelage, Massages & Post-Opératoire ────────────────────────────────
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "MIRACLE SCULPT",                     prix: 200 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "MIRACLE FACE (DRAINAGE VISAGE)",     prix: 120 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "MADÉROTHÉRAPIE (REMODELAGE)",        prix: 150 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "DRAINAGE LYMPHATIQUE CORPS",         prix: 150 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "MASSAGE RELAXANT (1H)",              prix: 150 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "MASSAGE ANTICELLULITE",              prix: 150 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "MASSAGE JAMBES LOURDES",             prix: 150 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "PEELING CORPS",                      prix: 250 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "PEELING PARTIES INTIMES",            prix: 300 },
-  { cat: "REMODELAGE, MASSAGES & POST-OPÉRATOIRE", nom: "SÉANCE POST OP VISAGE",              prix: 120 },
+  // ── Haute technologie & lasers ────────────────────────────────────────────
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "LASER CO2 FRACTIONNÉ",                   prix: 450 },
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "HIFU VISAGE",                            prix: 250 },
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "HIFU CORPS",                             prix: 350 },
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "CARBOXYTHÉRAPIE",                        prix: 250 },
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "PLASMA FROID",                           prix: 250 },
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "RADIOFRÉQUENCE & CAVITATION",            prix: 150 },
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "ONDES DE CHOC",                          prix: 150 },
+  { cat: "HAUTE TECHNOLOGIE & LASERS",  nom: "ULTRASONS",                              prix: 150 },
 
-  // ── Les Cures ─────────────────────────────────────────────────────────────
-  { cat: "LES CURES",                            nom: "CURE 5 SÉANCES (DRAINAGE)",            prix: 650  },
-  { cat: "LES CURES",                            nom: "CURE 6 SÉANCES (DRAINAGE)",            prix: 750  },
-  { cat: "LES CURES",                            nom: "CURE 10 SÉANCES (MADÉROTHÉRAPIE)",     prix: 1200 },
-  { cat: "LES CURES",                            nom: "CURE POST OP VISAGE (6 SÉANCES)",      prix: 600  },
-  { cat: "LES CURES",                            nom: "CURE POST OP VISAGE (10 SÉANCES)",     prix: 1000 },
-  { cat: "LES CURES",                            nom: "CURE POST OP CORPS (6 SÉANCES)",       prix: 750  },
-  { cat: "LES CURES",                            nom: "CURE POST OP CORPS (10 SÉANCES)",      prix: 1200 },
-  { cat: "LES CURES",                            nom: "CURE POST OP CORPS (20 SÉANCES)",      prix: 2400 },
+  // ── Post-opératoire ───────────────────────────────────────────────────────
+  { cat: "POST-OPÉRATOIRE",             nom: "MASSAGE POST-OPÉRATOIRE",                prix: 150 },
+  { cat: "POST-OPÉRATOIRE",             nom: "MASSAGE POST-OPÉRATOIRE VISAGE",         prix: 120 },
+  { cat: "POST-OPÉRATOIRE",             nom: "EXTRACTION DE SÉROMA",                   prix: 120 },
+  { cat: "POST-OPÉRATOIRE",             nom: "FIBROSES PAR CARBOXYTHÉRAPIE",           prix: 250 },
+  { cat: "POST-OPÉRATOIRE",             nom: "FIBROSES PAR ENZYMES",                   prix: 300 },
+  { cat: "POST-OPÉRATOIRE",             nom: "VITAMINES FIXATION BBL",                 prix: 250 },
+  { cat: "POST-OPÉRATOIRE",             nom: "DRAINAGE LYMPHATIQUE CORPS",             prix: 150 },
+  { cat: "POST-OPÉRATOIRE",             nom: "MIRACLE FACE (DRAINAGE VISAGE)",         prix: 120 },
+  { cat: "POST-OPÉRATOIRE",             nom: "MIRACLE SCULPT",                         prix: 200 },
+  { cat: "POST-OPÉRATOIRE",             nom: "MADÉROTHÉRAPIE (REMODELAGE)",            prix: 150 },
+  { cat: "POST-OPÉRATOIRE",             nom: "MASSAGE RELAXANT (1H)",                  prix: 150 },
+  { cat: "POST-OPÉRATOIRE",             nom: "MASSAGE ANTICELLULITE",                  prix: 150 },
+  { cat: "POST-OPÉRATOIRE",             nom: "MASSAGE JAMBES LOURDES",                 prix: 150 },
+
+  // ── Les cures ─────────────────────────────────────────────────────────────
+  { cat: "LES CURES",                   nom: "CURE 6 SÉANCES POST-OP CORPS",           prix: 750  },
+  { cat: "LES CURES",                   nom: "CURE 10 SÉANCES POST-OP CORPS",          prix: 1200 },
+  { cat: "LES CURES",                   nom: "CURE 20 SÉANCES POST-OP CORPS",          prix: 2400 },
+  { cat: "LES CURES",                   nom: "CURE 6 SÉANCES POST-OP VISAGE",          prix: 600  },
+  { cat: "LES CURES",                   nom: "CURE 10 SÉANCES POST-OP VISAGE",         prix: 1000 },
+  { cat: "LES CURES",                   nom: "CURE 5 SÉANCES CARBOXYTHÉRAPIE",         prix: 1000 },
+  { cat: "LES CURES",                   nom: "CURE 4 SÉANCES ENZYMES",                 prix: 1000 },
+  { cat: "LES CURES",                   nom: "CURE 5 SÉANCES DRAINAGE",                prix: 650  },
+  { cat: "LES CURES",                   nom: "CURE 6 SÉANCES DRAINAGE",                prix: 750  },
+  { cat: "LES CURES",                   nom: "CURE 10 SÉANCES MADÉROTHÉRAPIE",         prix: 1200 },
 ];
 
 const MODES_PAIEMENT = ["CB", "Espèces", "Chèque", "PayPal", "Virement"];
@@ -333,6 +351,7 @@ export default function Comptabilite() {
   const [categorie,  setCategorie]  = useState('');
   const [prestation, setPrestation] = useState('');
   const [prixBase,   setPrixBase]   = useState(null);
+  const [estLibre,   setEstLibre]   = useState(false);   // tarif "à partir de" ou "sur devis"
   const [remise,     setRemise]     = useState(0);
   const [paiement,   setPaiement]   = useState('CB');
   const [submitting, setSubmitting] = useState(false);
@@ -379,6 +398,7 @@ export default function Comptabilite() {
     setCategorie(e.target.value);
     setPrestation('');
     setPrixBase(null);
+    setEstLibre(false);
     setRemise(0);
   };
 
@@ -390,6 +410,7 @@ export default function Comptabilite() {
     setPrestation(nom);
     const trouvee = PRESTATIONS.find(p => p.nom === nom);
     setPrixBase(trouvee ? trouvee.prix : null);
+    setEstLibre(!!(trouvee && trouvee.libre));
     setRemise(0);
   };
 
@@ -401,15 +422,18 @@ export default function Comptabilite() {
     setRemise(val);
   };
 
-  const montantFinal = prixBase !== null
-    ? Math.round(prixBase * (1 - remise / 100) * 100) / 100
-    : null;
+  const montantFinal = prixBase === null
+    ? null
+    : estLibre
+      ? Math.round(prixBase * 100) / 100
+      : Math.round(prixBase * (1 - remise / 100) * 100) / 100;
 
   // ── Ajouter une prestation au panier ─────────────────────────────────────
   const ajouterAuPanier = () => {
     if (!prestation || montantFinal === null) return alert("Choisissez une prestation.");
+    if (estLibre && (!montantFinal || montantFinal <= 0)) return alert("Saisissez le montant de cette prestation.");
     setPanier(p => [...p, { categorie, prestation, prixBase, remise, montant: montantFinal, paiement }]);
-    setCategorie(''); setPrestation(''); setPrixBase(null); setRemise(0);
+    setCategorie(''); setPrestation(''); setPrixBase(null); setEstLibre(false); setRemise(0);
   };
 
   // ── Supprimer une ligne du panier ─────────────────────────────────────────
@@ -438,7 +462,7 @@ export default function Comptabilite() {
       });
     }
     setClient(''); setPanier([]); setCategorie(''); setPrestation('');
-    setPrixBase(null); setRemise(0); setPaiement('CB');
+    setPrixBase(null); setEstLibre(false); setRemise(0); setPaiement('CB');
     await chargerLignes();
     setSubmitting(false);
   };
@@ -651,7 +675,7 @@ export default function Comptabilite() {
                   <div style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.muted, marginBottom: 12 }}>
                     Ajouter une prestation
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, alignItems: 'end' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 10, alignItems: 'end' }}>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                       <label style={s.label}>Catégorie</label>
@@ -673,16 +697,31 @@ export default function Comptabilite() {
                       <label style={s.label}><span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>{Icon.lock} Remise</span></label>
                       <select
                         style={{ ...s.field, background: remise > 0 ? '#fffbf0' : C.white }}
-                        value={remise} onChange={handleRemiseChange} disabled={prixBase === null}
+                        value={remise} onChange={handleRemiseChange} disabled={prixBase === null || estLibre}
+                        title={estLibre ? "Tarif variable : saisissez directement le montant" : undefined}
                       >
                         {REMISES_OPTIONS.map(r => <option key={r} value={r}>{r === 0 ? 'Aucune' : `−${r}%`}</option>)}
                       </select>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <label style={s.label}>Montant TTC{remise > 0 && prixBase !== null && <span style={{ ...s.remiseBadge, marginLeft: 6 }}>−{remise}%</span>}</label>
-                      <input readOnly style={{ ...s.field, background: '#fafafa', fontWeight: 600 }}
-                        value={montantFinal !== null ? `${montantFinal} €` : '—'} />
+                      <label style={s.label}>
+                        Montant TTC
+                        {remise > 0 && prixBase !== null && !estLibre && <span style={{ ...s.remiseBadge, marginLeft: 6 }}>−{remise}%</span>}
+                        {estLibre && <span style={{ ...s.remiseBadge, marginLeft: 6, background: '#e8f0e6', color: '#4F6647' }}>à ajuster</span>}
+                      </label>
+                      {estLibre ? (
+                        <input
+                          type="number" min="0" step="10" inputMode="decimal"
+                          style={{ ...s.field, fontWeight: 600 }}
+                          value={prixBase ?? ''}
+                          onChange={(e) => setPrixBase(e.target.value === '' ? 0 : Number(e.target.value))}
+                          placeholder="Montant en €"
+                        />
+                      ) : (
+                        <input readOnly style={{ ...s.field, background: '#fafafa', fontWeight: 600 }}
+                          value={montantFinal !== null ? `${montantFinal} €` : '—'} />
+                      )}
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>

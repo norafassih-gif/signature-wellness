@@ -153,7 +153,7 @@ export default function Booking() {
   if (isConfirmed) {
     return (
       <div className="pt-40 pb-20 px-4 min-h-screen bg-white text-center animate-fade-in">
-        <img src={logo} alt="Signature Wellness" className="h-16 mx-auto mb-10" />
+        <img loading="lazy" decoding="async" src={logo} alt="Signature Wellness" className="h-16 mx-auto mb-10" />
         <div className="max-w-md mx-auto">
           <div className="w-20 h-20 bg-stone-50 text-stone-800 rounded-full flex items-center justify-center mx-auto mb-8 text-3xl border border-stone-100 italic font-serif">
             SW

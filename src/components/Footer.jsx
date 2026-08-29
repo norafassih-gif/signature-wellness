@@ -19,7 +19,7 @@ export default function Footer() {
         
         {/* COLONNE 1 : MARQUE */}
         <div className="space-y-6 lg:col-span-1">
-          <img src={logo} alt="Signature Wellness" className="h-12 w-auto opacity-80" />
+          <img loading="lazy" decoding="async" src={logo} alt="Signature Wellness" className="h-12 w-auto opacity-80" />
           <p className="text-[11px] leading-relaxed font-light text-[#78716c] uppercase tracking-wider">
             L'excellence de la dermo-cosmétique & du soin esthetique.
           </p>

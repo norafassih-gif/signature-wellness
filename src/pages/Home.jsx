@@ -8,7 +8,7 @@ import imgFemme2 from '../assets/femmescouleurs2.jpg';
 import imgFemme3 from '../assets/femmescouleurs3.jpg';
 import imgLaser from '../assets/laser.jpg';
 import imgHydra from '../assets/hydrafacial.jpg';
-import imgMassage from '../assets/formation-massage.png'; 
+import imgMassage from '../assets/formation-massage.jpg'; 
 import imgNeedling from '../assets/microneedling.jpg';
 import imgParallax from '../assets/Corp3.jpg'; 
 import imgHifu from '../assets/Hifu.jpg';
@@ -18,7 +18,7 @@ import imgJambes from '../assets/soin-jambes.jpg';
 import imgBlanchiment from '../assets/Blanchiement.jpg';
 import imgDetatouage from '../assets/Detatouage.jpg';
 import imgPeeling from '../assets/Peeling.jpg';
-import imgPlasmaFroid from '../assets/soin-plasma.png'; 
+import imgPlasmaFroid from '../assets/soin-plasma.jpg'; 
 
 export default function Home() {
   const { pathname } = useLocation(); 
@@ -152,7 +152,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="md:w-1/2 w-full h-[400px] md:h-[600px]">
-              <img src={imgMassage} alt="Massage" className="w-full h-full object-cover shadow-2xl" />
+              <img loading="lazy" decoding="async" src={imgMassage} alt="Massage" className="w-full h-full object-cover shadow-2xl" />
             </div>
           </div>
         </section>
@@ -169,7 +169,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="md:w-1/2 w-full h-[400px] md:h-[600px]">
-              <img src={imgLaser} alt="Laser" className="w-full h-full object-cover shadow-2xl" />
+              <img loading="lazy" decoding="async" src={imgLaser} alt="Laser" className="w-full h-full object-cover shadow-2xl" />
             </div>
           </div>
         </section>
@@ -178,7 +178,7 @@ export default function Home() {
       {/* --- L'EFFET RIDEAU (DÉZOOMÉ SANS FOND MARRON) --- */}
       <section className="relative w-full h-[65vh] md:h-[85vh] overflow-hidden bg-white">
         <div className="absolute inset-0 z-0">
-          <img 
+          <img loading="lazy" decoding="async" 
             src={imgParallax} 
             className="w-full h-full object-cover fixed top-0 left-0 -z-10 opacity-90" 
             alt="Signature Wellness Neuilly" 
@@ -215,10 +215,10 @@ export default function Home() {
          <div className="relative flex overflow-x-hidden group border-t border-[#e7e5e4] pt-2">
            <div className="flex carousel-track whitespace-nowrap">
              {instagramPhotos.map((img, idx) => (
-               <img key={`first-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer grayscale hover:grayscale-0 duration-700" alt="Gallery" />
+               <img loading="lazy" decoding="async" key={`first-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer grayscale hover:grayscale-0 duration-700" alt="Gallery" />
              ))}
              {instagramPhotos.map((img, idx) => (
-               <img key={`second-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer grayscale hover:grayscale-0 duration-700" alt="Gallery" />
+               <img loading="lazy" decoding="async" key={`second-${idx}`} src={img} className="w-64 h-64 md:w-80 md:h-80 object-cover mx-1 shadow-sm hover:opacity-80 transition-opacity cursor-pointer grayscale hover:grayscale-0 duration-700" alt="Gallery" />
              ))}
            </div>
          </div>

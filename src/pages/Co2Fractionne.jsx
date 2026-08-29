@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 // --- IMPORTATION DES IMAGES (CORRIGÉES SANS ESPACES) ---
 import imgMain from '../assets/Hifu.jpg';
-import imgPlasma from "../assets/soin-plasma.png"; 
+import imgPlasma from "../assets/soin-plasma.jpg"; 
 import imgBottom from "../assets/Corp4.jpg"; // Vérifie bien que c'est .jpg et sans espace
 
 export default function Co2Fractionne() {
@@ -37,7 +37,7 @@ export default function Co2Fractionne() {
 
         {/* PHOTO PRINCIPALE */}
         <div className="max-w-5xl mx-auto h-[400px] md:h-[600px] overflow-hidden shadow-2xl mb-24">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgMain} 
                 alt="Soin haute technologie CO2 Fractionné" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
@@ -101,7 +101,7 @@ export default function Co2Fractionne() {
 
         {/* IMAGE INTERMÉDIAIRE */}
         <div className="max-w-4xl mx-auto h-[300px] md:h-[450px] overflow-hidden shadow-xl mb-24">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgPlasma} 
                 alt="Technologie Plasma Froid" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
@@ -131,7 +131,7 @@ export default function Co2Fractionne() {
 
         {/* IMAGE DU BAS */}
         <div className="max-w-5xl mx-auto h-[400px] md:h-[500px] overflow-hidden shadow-2xl mb-16">
-            <img 
+            <img loading="lazy" decoding="async" 
                 src={imgBottom} 
                 alt="Traitement Corps Haute Technologie" 
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"

@@ -81,7 +81,7 @@ export default function Microneedling() {
 
           {/* IMAGE FLOTTANTE */}
           <div className="md:w-1/2 w-full h-[600px] reveal">
-             <img 
+             <img loading="lazy" decoding="async" 
                src={imgMicroneedling} 
                alt="Soin Microneedling et PRP" 
                className="w-full h-full object-cover shadow-2xl animate-float" 
