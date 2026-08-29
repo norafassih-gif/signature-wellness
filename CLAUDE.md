@@ -63,6 +63,20 @@ https://claude.ai/code/artifact/ffa51a42-09c0-4712-a2f4-c20da781451d
 - **ScrollToTop** global monté dans App.jsx ; page 404 sur `path="*"`.
 - **index.html** : titre, `lang="fr"`, favicon, description, Open Graph + og-image, canonical.
   `public/robots.txt` et `public/sitemap.xml` ajoutés.
+- **Caisse** : grille refaite (74 prestations, 9 categories) alignee sur la Price List Instagram ;
+  6 prix corriges, 13 prestations ajoutees, "PRP" -> "Vitamines", "Laser CO2" -> "Microabrasion".
+  Nouveau champ `libre: true` : montant saisissable pour les tarifs "a partir de" et "sur devis".
+  Formulaire d'encaissement rendu responsive.
+- **Tarifs publics** : la grille d'avril est en ligne, les 12 prestations post-operatoires aussi.
+  Le site et l'Instagram sont alignes a 100 %. Comparatif :
+  https://claude.ai/code/artifact/97e583ac-a74a-4d78-a569-0bd0d70fde67
+- **Images** : 9,4 Mo -> 3,2 Mo. 12 visuels inutilises supprimes, PNG photo convertis en JPEG,
+  redimensionnement a 1920px, `loading="lazy"` sur 29 images hors premier ecran.
+  ATTENTION : ne jamais renommer un fichier image en changeant seulement la casse
+  (Corp1.jpg -> corp1.jpg). Le systeme de fichiers du Mac ne distingue pas les deux
+  et le fichier est detruit. Changer aussi l'extension ou le nom lui-meme.
+- **Navigation gestion** : apres connexion on revient sur la page demandee ; liens
+  Planning <-> Caisse ; lien discret "Espace pro" dans le pied de page.
 - **Animations** : `animate-fade-in` / `animate-fade-in-up` définies dans index.css, pause du
   carrousel via `.carousel-track`, doublon `marquee` retiré de tailwind.config.js,
   `prefers-reduced-motion` respecté.
@@ -80,18 +94,15 @@ https://claude.ai/code/artifact/ffa51a42-09c0-4712-a2f4-c20da781451d
 4. **Pas de transaction anti-double-réservation** — deux clientes peuvent prendre la dernière place.
 5. **Admin.jsx** ne vérifie que « connecté », pas l'UID. Risque faible depuis la suppression de
    l'inscription publique, mais à aligner sur Comptabilite.jsx.
-6. **Tarifs incohérents** — 7 écarts entre les pages publiques et la grille de `Comptabilite.jsx`
-   (ex. Soin Signature 200 €/60 min sur le site vs 149 €/30 min en caisse). Une seule source de vérité à créer.
 7. **Page `/co2-fractionne`** ne propose pas de CO2 fractionné (carte = HIFU, Carboxy, Plasma).
 8. **Soin visage nommé de 3 façons** : Hydraface / Soin Hydro-Expert / Soin Signature Hydraface.
 9. **3 adresses email** différentes (academy / paris / agenda).
-10. **9,5 Mo d'images** non optimisées, dont 12 inutilisées ; aucun `loading="lazy"`.
 
-### Fichiers modifiés jamais envoyés
+### En attente d'une reponse de la cliente
 
-`PaymentButton.jsx`, `BodyContouring.jsx`, `Co2Fractionne.jsx`, `Microneedling.jsx`,
-`MiracleSculpt.jsx` — modifications d'avril 2026 (tarifs corps + remplacement du module PayPal
-par un lien paypal.me). Volontairement laissés de côté : à valider avec Nora avant mise en ligne.
+Regle des creneaux a confirmer : ouverture mardi-samedi 11h-17h, un creneau par heure.
+Mardi/jeudi/samedi 2 post-op + 1 autre (3 places), mercredi/vendredi 1 + 1 (2 places).
+A valider : l'horaire de fin, et la pertinence du decoupage post-op / autre.
 
 ## Qualiopi
 
