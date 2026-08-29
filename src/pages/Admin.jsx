@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import useGoogleCalendar from '../hooks/useGoogleCalendar';
 
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
@@ -24,6 +24,7 @@ export default function Admin() {
   const { isConnected, connect, disconnect, syncAppointment, fetchCalendarEvents } = useGoogleCalendar();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -31,7 +32,7 @@ export default function Admin() {
         setUser(u);
         loadData();
       } else {
-        navigate('/login');
+        navigate('/login', { state: { from: location.pathname }, replace: true });
       }
     });
     return () => unsubscribe();
@@ -188,9 +189,14 @@ export default function Admin() {
               <IconUser className="w-4 h-4" /> Espace Gestionnaire
             </p>
           </div>
-          <button onClick={() => { auth.signOut(); navigate('/'); }} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-stone-500 border border-stone-300 px-6 py-3 rounded-full hover:bg-stone-800 hover:text-white transition-all">
-            <IconLogout className="w-4 h-4" /> Déconnexion
-          </button>
+          <div className="flex items-center gap-3">
+            <Link to="/comptabilite" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-stone-500 border border-stone-300 px-6 py-3 rounded-full hover:bg-stone-800 hover:text-white transition-all">
+              Caisse
+            </Link>
+            <button onClick={() => { auth.signOut(); navigate('/'); }} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-stone-500 border border-stone-300 px-6 py-3 rounded-full hover:bg-stone-800 hover:text-white transition-all">
+              <IconLogout className="w-4 h-4" /> Déconnexion
+            </button>
+          </div>
         </div>
 
         {/* --- BANDEAU GOOGLE CALENDAR --- */}

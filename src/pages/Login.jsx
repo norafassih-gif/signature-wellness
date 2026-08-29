@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  // Page que l'on voulait ouvrir avant d'etre renvoye ici
+  const destination = location.state?.from || '/admin';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +18,7 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/admin');
+      navigate(destination, { replace: true });
     } catch (err) {
       console.error(err);
       setError("Email ou mot de passe incorrect.");

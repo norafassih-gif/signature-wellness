@@ -28,7 +28,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   collection, addDoc, getDocs, deleteDoc,
   doc, query, orderBy, where,
@@ -372,6 +372,7 @@ export default function Comptabilite() {
   // ── Authentification ─────────────────────────────────────────────────────
   const [autorise, setAutorise] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ── Firebase ─────────────────────────────────────────────────────────────
   const chargerLignes = async () => {
@@ -387,7 +388,7 @@ export default function Comptabilite() {
         chargerLignes();
       } else {
         setAutorise(false);
-        navigate('/login');
+        navigate('/login', { state: { from: location.pathname }, replace: true });
       }
     });
     return () => unsubscribe();
@@ -606,9 +607,17 @@ export default function Comptabilite() {
 
         <div style={{ flex: 1 }} />
 
+        <Link
+          to="/admin"
+          style={{ ...s.btnGhost, alignSelf: 'center', marginLeft: 16, textDecoration: 'none' }}
+          title="Retour au planning"
+        >
+          Planning
+        </Link>
+
         <button
           onClick={async () => { await signOut(auth); navigate('/'); }}
-          style={{ ...s.btnGhost, alignSelf: 'center', marginLeft: 16 }}
+          style={{ ...s.btnGhost, alignSelf: 'center', marginLeft: 8 }}
           title="Se déconnecter"
         >
           Déconnexion
