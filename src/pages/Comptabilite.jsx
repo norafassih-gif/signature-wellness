@@ -26,7 +26,9 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { db } from '../firebase';
+import { auth, db } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import {
   collection, addDoc, getDocs, deleteDoc,
   doc, query, orderBy, where,
@@ -38,6 +40,7 @@ import autoTable from 'jspdf-autotable';
 //  CONFIGURATION — À MODIFIER
 // ═══════════════════════════════════════════════════════════════════════════════
 const ADMIN_CODE        = "SW2026&";
+const ADMIN_UID         = "EQIW1yJpSvS7VSoRl8XxMqxGCs42"; // ← Seul compte autorisé sur /comptabilite
 const NOM_ETABLISSEMENT = "Signature Wellness"; // ← Affiché sur les exports PDF
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -347,7 +350,9 @@ export default function Comptabilite() {
   const [calLoading,      setCalLoading]      = useState(false);
   const [calErreur,       setCalErreur]       = useState('');
 
-  useEffect(() => { chargerLignes(); }, []);
+  // ── Authentification ─────────────────────────────────────────────────────
+  const [autorise, setAutorise] = useState(false);
+  const navigate = useNavigate();
 
   // ── Firebase ─────────────────────────────────────────────────────────────
   const chargerLignes = async () => {
@@ -355,6 +360,19 @@ export default function Comptabilite() {
     const snap = await getDocs(q);
     setLignes(snap.docs.map(d => ({ id: d.id, ...d.data() })));
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      if (u && u.uid === ADMIN_UID) {
+        setAutorise(true);
+        chargerLignes();
+      } else {
+        setAutorise(false);
+        navigate('/login');
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // ── Sélection catégorie ───────────────────────────────────────────────────
   const handleCategorieChange = (e) => {
@@ -543,6 +561,16 @@ export default function Comptabilite() {
     : labelPeriode[filtreP];
 
   // ═════════════════════════════════════════════════════════════════════════════
+  if (!autorise) {
+    return (
+      <div style={{ ...s.page, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: C.muted, fontSize: '0.8rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Vérification de l'accès…
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div style={s.page}>
 
