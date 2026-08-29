@@ -145,18 +145,73 @@ export default function MiracleSculpt() {
         {/* DOUBLE IMAGE */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
           <div className="h-[300px] md:h-[400px] overflow-hidden shadow-lg">
-            <img 
-                src={imgMadero} 
-                alt="Madérothérapie" 
+            <img
+                src={imgMadero}
+                alt="Madérothérapie"
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
             />
           </div>
           <div className="h-[300px] md:h-[400px] overflow-hidden shadow-lg">
-            <img 
-                src={imgJambe} 
-                alt="Soin Jambes Lourdes" 
+            <img
+                src={imgJambe}
+                alt="Soin Jambes Lourdes"
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
             />
+          </div>
+        </div>
+
+        {/* MENU DES RITUELS & CURES */}
+        <div className="mb-24">
+          <h2 className="text-2xl font-bold uppercase tracking-widest mb-12 text-center text-[#57534e]">
+            Rituels & Cures
+          </h2>
+
+          <div className="bg-white shadow-xl border border-[#e7e5e4] p-8 md:p-12">
+
+            {/* RITUELS */}
+            <div className="mb-12">
+              <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
+                Les Rituels
+              </h3>
+              <PriceItem name="Drainage Lymphatique Corps" price="150€" />
+              <PriceItem name="Madérothérapie (Remodelage)" price="150€" />
+              <PriceItem name="Miracle Face (Drainage Visage)" price="120€" />
+            </div>
+
+            {/* CURES */}
+            <div className="mb-12">
+              <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 mt-4 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
+                Les Cures
+              </h3>
+              <PriceItem name="Cure 6 Séances (Drainage)" price="750€" />
+              <PriceItem name="Cure 10 Séances (Madérothérapie)" price="1 200€" />
+            </div>
+
+            {/* SOINS POST-OPÉRATOIRES */}
+            <div>
+              <h3 className="text-center text-[#78716c] text-xs font-bold uppercase tracking-[0.4em] mb-8 mt-4 border-b border-[#e7e5e4] pb-4 w-1/2 mx-auto">
+                Soins Post-Opératoires
+              </h3>
+              <PriceItem name="Massage Post-Opératoire" price="150€" />
+              <PriceItem name="Extraction de Séroma" price="120€" />
+              <PriceItem name="Cure de 6 séances Post-Opératoire" price="750€" />
+              <PriceItem name="Cure de 10 séances Post-Opératoire" price="1 200€" />
+              <PriceItem name="Cure de 20 séances Post-Opératoire" price="2 400€" />
+              <PriceItem name="Traitement de Fibroses par Carboxythérapie" price="250€" />
+              <PriceItem name="Cure de 5 séances de Carboxythérapie" price="1 000€" />
+              <PriceItem name="Traitement de Fibroses par Enzymes" price="300€" />
+              <PriceItem name="Cure de 4 séances d'Enzymes" price="1 000€" />
+              <PriceItem name="Massage Post-Opératoire Visage" price="120€" />
+              <PriceItem name="Cure de 6 Massages Post-Opératoire Visage" price="600€" />
+              <PriceItem name="Vitamines Fixation BBL" price="250€" />
+            </div>
+
+          </div>
+
+          <div className="text-center mt-10">
+            <p className="text-[10px] text-[#a8a29e] uppercase tracking-wider italic">
+              *Tarifs indicatifs, un devis précis sera établi lors de votre consultation.
+            </p>
           </div>
         </div>
 
@@ -193,6 +248,15 @@ export default function MiracleSculpt() {
             </p>
          </div>
       </section>
+    </div>
+  );
+}
+
+function PriceItem({ name, price }) {
+  return (
+    <div className="flex justify-between items-center py-4 border-b border-[#f5f5f4] hover:bg-[#fafaf9] transition-colors duration-300 px-4 group cursor-default">
+      <span className="text-[#57534e] text-sm uppercase tracking-widest font-medium group-hover:text-[#78716c] transition-colors">{name}</span>
+      <span className="text-[#78716c] font-bold text-sm bg-transparent">{price}</span>
     </div>
   );
 }

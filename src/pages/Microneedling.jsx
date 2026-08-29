@@ -111,8 +111,17 @@ export default function Microneedling() {
                    Dermocosmétique Visage
                 </h3>
                 <div className="space-y-0">
-                   <PriceItem name="Needling Classique" price="150€" />
+                   <PriceItem name="Hydraface" price="200€" />
                    <PriceItem name="Hydraneedling" price="250€" />
+                   <PriceItem name="Needling" price="150€" />
+                   <PriceItem name="Natural Peel" price="250€" />
+                   <PriceItem name="Regeneration Peel" price="350€" />
+                   <PriceItem name="Clear Peel" price="330€" />
+                   <PriceItem name="Clarity Peel" price="370€" />
+                   <PriceItem name="Exosomes Full Face" price="350€" />
+                   <PriceItem name="Exosomes Full Face + Décolleté" price="450€" />
+                   <PriceItem name="Vitamines Full Face" price="250€" />
+                   <PriceItem name="Vitamines + Exosomes Full Face" price="450€" />
                 </div>
               </div>
 
@@ -122,9 +131,13 @@ export default function Microneedling() {
                    Skin Boosters & Vitamines
                 </h3>
                 <div className="space-y-0">
-                   <PriceItem name="PDRN (ADN Saumon)" price="350€" />
-                   <PriceItem name="Eyes Repair Glutathion (Cernes)" price="250€" />
-                   <PriceItem name="Collagen Booster Glutathion — Visage, Cou, Décolleté, Mains" price="350€" />
+                   <PriceItem name="PDRN" price="350€" />
+                   <PriceItem name="Eyes Repair" price="200€" />
+                   <PriceItem name="Cure de 3 séances d'Eyes Repair" price="500€" />
+                   <PriceItem name="Perfusion de Vitamines" price="300€" />
+                   <PriceItem name="Glutathion" price="300€" />
+                   <PriceItem name="Cure de 8 séances de Glutathion" price="1 800€" />
+                   <PriceItem name="Collagen Booster" price="350€" />
                 </div>
               </div>
 
@@ -134,9 +147,16 @@ export default function Microneedling() {
                    Traitements Capillaires
                 </h3>
                 <div className="space-y-0">
-                   <PriceItem name="Cocktail Activateur de Pousse" price="120€" />
+                   <PriceItem name="Vitamines" price="250€" />
+                   <PriceItem name="Vitamines + Exosomes" price="450€" />
+                   <PriceItem name="Exosomes" price="350€" />
                    <PriceItem name="Traitement de Pelade" price="200€" />
-                   <PriceItem name="Exosomes Cheveux" price="350€" />
+                   <PriceItem name="Cure de 5 séances de Vitamines" price="1 000€" />
+                   <PriceItem name="Cure de 5 séances Vitamines + Exosomes" price="1 650€" />
+                   <PriceItem name="Cure de 5 séances d'Exosomes" price="1 400€" />
+                   <PriceItem name="Cure de 5 séances Traitement de Pelade" price="1 000€" />
+                   <PriceItem name="Cocktail Activateur de Pousse" price="120€" />
+                   <PriceItem name="Cure de 8 séances Activateur de Pousse" price="800€" />
                 </div>
               </div>
 

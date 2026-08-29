@@ -55,20 +55,20 @@ export default function Co2Fractionne() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             
-            {/* Colonne 1 : CO2 & Carboxy */}
+            {/* Colonne 1 : HIFU & Carboxy */}
             <div className="space-y-8">
               <div className="border-b border-[#e7e5e4] pb-6">
                 <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="text-lg font-bold text-[#57534e] uppercase tracking-wider">Laser CO2 Fractionné</h3>
-                </div>
-                <div className="flex justify-between text-sm text-[#78716c] font-medium tracking-widest mb-1">
-                  <span>Petites zones</span><span>250€</span>
+                  <h3 className="text-lg font-bold text-[#57534e] uppercase tracking-wider">HIFU (Lifting Ultrasons)</h3>
                 </div>
                 <div className="flex justify-between text-sm text-[#78716c] font-medium tracking-widest mb-2">
-                  <span>Grandes zones</span><span>450€</span>
+                  <span>Visage</span><span>250€</span>
                 </div>
-                <p className="text-sm text-[#78716c] font-light leading-relaxed">
-                  Le traitement de référence pour le relissage cutané, la réduction des rides profondes, des cicatrices d'acné et des vergetures. Stimule la production de collagène de manière spectaculaire.
+                <div className="flex justify-between text-sm text-[#78716c] font-medium tracking-widest mb-2">
+                  <span>Corps</span><span>350€</span>
+                </div>
+                <p className="text-sm text-[#78716c] font-light leading-relaxed mt-2">
+                  Ultrasons Focalisés de Haute Intensité. Un véritable lifting non chirurgical qui agit sur le muscle (SMAS) pour retendre l'ovale du visage ou raffermir les zones corporelles relâchées.
                 </p>
               </div>
 
@@ -83,25 +83,8 @@ export default function Co2Fractionne() {
               </div>
             </div>
 
-            {/* Colonne 2 : HIFU & Plasma */}
+            {/* Colonne 2 : Plasma Froid */}
             <div className="space-y-8">
-              <div className="border-b border-[#e7e5e4] pb-6">
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="text-lg font-bold text-[#57534e] uppercase tracking-wider">HIFU (Lifting Ultrasons)</h3>
-                </div>
-                <div className="flex justify-between text-sm text-[#78716c] font-medium tracking-widest mb-2">
-                  <span>Visage</span>
-                  <span>250€</span>
-                </div>
-                <div className="flex justify-between text-sm text-[#78716c] font-medium tracking-widest mb-2">
-                  <span>Corps</span>
-                  <span>350€</span>
-                </div>
-                <p className="text-sm text-[#78716c] font-light leading-relaxed mt-2">
-                  Ultrasons Focalisés de Haute Intensité. Un véritable lifting non chirurgical qui agit sur le muscle (SMAS) pour retendre l'ovale du visage ou raffermir les zones corporelles relâchées.
-                </p>
-              </div>
-
               <div className="border-b border-[#e7e5e4] pb-6">
                 <div className="flex justify-between items-baseline mb-2">
                   <h3 className="text-lg font-bold text-[#57534e] uppercase tracking-wider">Plasma Froid</h3>
