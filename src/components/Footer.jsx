@@ -94,7 +94,17 @@ export default function Footer() {
 
       {/* COPYRIGHT */}
       <div className="border-t border-[#e7e5e4] pt-8 flex flex-col md:flex-row justify-between items-center text-[9px] text-[#a8a29e] uppercase tracking-[0.2em] max-w-7xl mx-auto px-4 gap-4 md:gap-0">
-        <div>© {new Date().getFullYear()} Signature Wellness. Tous droits réservés.</div>
+        <div className="flex items-center gap-3">
+          <span>© {new Date().getFullYear()} Signature Wellness. Tous droits réservés.</span>
+          <span className="text-[#d6d3d1]">·</span>
+          <Link
+            to="/admin"
+            className="text-[#c4c0bc] hover:text-[#57534e] transition-colors duration-300"
+            title="Espace de gestion"
+          >
+            Espace pro
+          </Link>
+        </div>
         <div>
           Site réalisé par <a 
             href="https://littlecreatrice.com" 
