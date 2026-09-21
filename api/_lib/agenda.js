@@ -7,8 +7,17 @@ import { CRENEAUX, CATEGORIES, FUSEAU, decalageParis } from './regles.js';
 const AGENDA_ID = process.env.GOOGLE_CALENDAR_ID || 'signature.wellnessagenda@gmail.com';
 const API = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(AGENDA_ID)}/events`;
 
+// Compte de service utilise pour l'agenda : celui du projet Google Cloud de l'agenda
+// (GOOGLE_CALENDAR_SERVICE_ACCOUNT, JSON ou base64) s'il est fourni, sinon celui de Firebase.
+function compteAgenda() {
+  const brut = process.env.GOOGLE_CALENDAR_SERVICE_ACCOUNT;
+  if (!brut) return compteService();
+  const texte = brut.trim().startsWith('{') ? brut : Buffer.from(brut, 'base64').toString('utf8');
+  return JSON.parse(texte);
+}
+
 async function appelGoogle(url, options = {}) {
-  const c = compteService();
+  const c = compteAgenda();
   const client = new JWT({ email: c.client_email, key: c.private_key, scopes: ['https://www.googleapis.com/auth/calendar.events'] });
   const { token } = await client.getAccessToken();
   const res = await fetch(url, {
