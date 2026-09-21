@@ -1,8 +1,10 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { db } from './firebase.js';
 import { creerEvenementRdv } from './agenda.js';
+import { envoyerMailsConfirmation, mailConfigure } from './mail.js';
 
 const DELAI_RESERVATION_AGENDA_MS = 2 * 60 * 1000;
+const DELAI_RESERVATION_MAIL_MS = 2 * 60 * 1000;
 
 // Confirme le RDV lie a une session Stripe payee, puis l'ajoute a Google Calendar.
 // Appelee par le webhook ET par la page de retour : le travail n'est jamais fait deux fois.
@@ -15,15 +17,18 @@ export async function confirmerRdv(session) {
   const ref = fs.collection('appointments').doc(id);
   const maintenant = Date.now();
 
-  const { rdv, creerEvenement } = await fs.runTransaction(async (tx) => {
+  const { rdv, creerEvenement, envoyerMail } = await fs.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
     const existant = snap.exists ? snap.data() : null;
     const agendaEnCours = (existant?.gcal_en_cours ?? 0) > maintenant - DELAI_RESERVATION_AGENDA_MS;
     const creer = !existant?.gcal_event_id && !agendaEnCours;
+    const mailEnCours = (existant?.email_en_cours ?? 0) > maintenant - DELAI_RESERVATION_MAIL_MS;
+    const mail = mailConfigure() && !existant?.email_envoye && !mailEnCours;
+    const reservations = { ...(creer ? { gcal_en_cours: maintenant } : {}), ...(mail ? { email_en_cours: maintenant } : {}) };
 
     if (existant?.status === 'confirmé') {
-      if (creer) tx.update(ref, { gcal_en_cours: maintenant });
-      return { rdv: existant, creerEvenement: creer };
+      if (creer || mail) tx.update(ref, reservations);
+      return { rdv: existant, creerEvenement: creer, envoyerMail: mail };
     }
 
     const m = session.metadata;
@@ -41,10 +46,10 @@ export async function confirmerRdv(session) {
       stripe_session_id: session.id,
       stripe_payment_intent: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id ?? null,
       expires_at: FieldValue.delete(),
-      ...(creer ? { gcal_en_cours: maintenant } : {}),
+      ...reservations,
     };
     tx.set(ref, maj, { merge: true });
-    return { rdv: { ...base, status: 'confirmé' }, creerEvenement: creer };
+    return { rdv: { ...base, status: 'confirmé' }, creerEvenement: creer, envoyerMail: mail };
   });
 
   if (creerEvenement) {
@@ -55,6 +60,15 @@ export async function confirmerRdv(session) {
     } catch (err) {
       console.error('Google Calendar :', err.message);
       await ref.update({ gcal_en_cours: FieldValue.delete(), gcal_erreur: err.message.slice(0, 300) });
+    }
+  }
+  if (envoyerMail) {
+    try {
+      await envoyerMailsConfirmation(rdv);
+      await ref.update({ email_envoye: true, email_en_cours: FieldValue.delete(), email_erreur: FieldValue.delete() });
+    } catch (err) {
+      console.error('Email :', err.message);
+      await ref.update({ email_en_cours: FieldValue.delete(), email_erreur: err.message.slice(0, 300) });
     }
   }
   return { id, ...rdv };

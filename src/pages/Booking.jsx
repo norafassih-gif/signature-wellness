@@ -191,7 +191,7 @@ export default function Booking() {
           </h1>
           <p className="text-stone-500 font-light leading-relaxed mb-10">
             Merci de votre confiance, {confirmation.prenom}. <br />
-            Votre acompte de 50 € a bien été réglé.
+            Votre acompte de 50 € a bien été réglé et un email de confirmation vous a été envoyé.
           </p>
           <div className="bg-stone-50 p-8 rounded-2xl border border-stone-100 text-left space-y-6">
             <div>
