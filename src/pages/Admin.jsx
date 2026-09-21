@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
@@ -21,7 +21,6 @@ export default function Admin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [syncingId, setSyncingId] = useState(null);
   const [importing, setImporting] = useState(false);
-  const hasSyncedOnLoad = useRef(false);
 
   const { isConnected, connect, disconnect, syncAppointment, fetchCalendarEvents } = useGoogleCalendar();
 
@@ -107,14 +106,8 @@ export default function Admin() {
     }
   };
 
-  // Auto-sync au chargement si connecté et token valide
-  useEffect(() => {
-    if (isConnected && appointments.length > 0 && !hasSyncedOnLoad.current) {
-      hasSyncedOnLoad.current = true;
-      const unsynced = appointments.filter(a => a.status === "confirmé" && !a.gcal_event_id);
-      if (unsynced.length > 0) handleSyncAll();
-    }
-  }, [isConnected, appointments]);
+  // Plus de synchro automatique au chargement : le serveur ajoute lui-même chaque RDV payé
+  // à l'agenda de l'institut. Le bouton « Tout synchroniser » reste disponible en secours.
 
   // Import des événements Google Calendar → bloque les créneaux dans Firestore
   const handleImportGCal = async () => {
