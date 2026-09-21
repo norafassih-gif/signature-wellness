@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Secrets (cles Stripe, compte de service Firebase)
+.env
+.env.*
+*firebase-adminsdk*.json

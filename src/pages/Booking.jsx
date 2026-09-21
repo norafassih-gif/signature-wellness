@@ -1,42 +1,78 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import PaymentButton from '../components/PaymentButton';
-import emailjs from '@emailjs/browser';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import logo from '../assets/logoSW.png';
 
 // --- CONFIGURATION DU CALENDRIER ---
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const daysOfWeek = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const timeSlots = ["11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-
-// --- DISPONIBILITÉS PAR JOUR (0=Dim, 1=Lun, ..., 6=Sam) ---
-// null = fermé
-const DAY_SLOTS = {
-  0: null,                       // Dimanche — fermé
-  1: null,                       // Lundi — fermé
-  2: { postop: 2, autre: 1 },   // Mardi
-  3: { postop: 1, autre: 1 },   // Mercredi
-  4: { postop: 2, autre: 1 },   // Jeudi
-  5: { postop: 1, autre: 1 },   // Vendredi
-  6: { postop: 2, autre: 1 },   // Samedi
-};
+const JOURS_OUVERTS = [2, 3, 4, 5, 6]; // mardi -> samedi (0 = dimanche)
 
 const CATEGORY_LABELS = {
   postop: 'Post-opératoire',
-  autre: 'Autre',
+  autre: 'Autre soin',
 };
+
+const CLE_BROUILLON = 'sw_reservation_client';
+const lireBrouillon = () => {
+  try { return JSON.parse(sessionStorage.getItem(CLE_BROUILLON)) || null; } catch { return null; }
+};
+const ecrireBrouillon = (client) => {
+  try { sessionStorage.setItem(CLE_BROUILLON, JSON.stringify(client)); } catch { /* navigation privee */ }
+};
+
+const formatDate = (dateStr) =>
+  new Date(dateStr + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 
 export default function Booking() {
   const [step, setStep] = useState(1);
-  const [client, setClient] = useState({ nom: '', prenom: '', email: '', tel: '' });
+  const [client, setClient] = useState(() => lireBrouillon() || { nom: '', prenom: '', email: '', tel: '' });
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [blockedDates, setBlockedDates] = useState([]);
-  const [dayAppointments, setDayAppointments] = useState([]);
-  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [places, setPlaces] = useState({});
+  const [chargementCreneaux, setChargementCreneaux] = useState(false);
+  const [accepteConditions, setAccepteConditions] = useState(false);
+  const [paiementEnCours, setPaiementEnCours] = useState(false);
+  const [message, setMessage] = useState('');
+  const [confirmation, setConfirmation] = useState(null); // { prenom, date, time, categorie }
+  const [verification, setVerification] = useState(false);
+
+  // Retour depuis Stripe : paiement reussi (?session_id=) ou abandonne (?annule=)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const annule = params.get('annule');
+
+    if (sessionId) {
+      setVerification(true);
+      fetch(`/api/statut-reservation?session_id=${encodeURIComponent(sessionId)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.paye) {
+            setConfirmation(data);
+            try { sessionStorage.removeItem(CLE_BROUILLON); } catch { /* rien */ }
+          } else {
+            setMessage("Le paiement n'a pas été finalisé. Vous pouvez choisir à nouveau votre créneau.");
+            setStep(lireBrouillon() ? 2 : 1);
+          }
+        })
+        .catch(() => setMessage("Nous n'avons pas pu vérifier le paiement. Si vous avez été débitée, contactez l'institut."))
+        .finally(() => setVerification(false));
+    } else if (annule) {
+      fetch('/api/annuler-reservation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: annule }),
+      }).catch(() => {});
+      setMessage('Paiement annulé : le créneau a été libéré. Vous pouvez en choisir un autre.');
+      if (lireBrouillon()) setStep(2);
+    }
+    if (sessionId || annule) window.history.replaceState({}, '', '/reservation');
+  }, []);
 
   // Charge les dates bloquées (journée entière)
   useEffect(() => {
@@ -50,52 +86,25 @@ export default function Booking() {
     loadBlockedDates();
   }, []);
 
-  // Charge les RDV du jour sélectionné pour calculer les disponibilités
+  // Places restantes du jour sélectionné (calculées par le serveur, agenda Google inclus)
+  const chargerPlaces = async (date) => {
+    setChargementCreneaux(true);
+    try {
+      const res = await fetch(`/api/disponibilites?date=${date}`);
+      const data = await res.json();
+      setPlaces(data.creneaux || {});
+    } catch {
+      setPlaces({});
+      setMessage('Impossible de charger les créneaux, merci de réessayer.');
+    } finally {
+      setChargementCreneaux(false);
+    }
+  };
+
   useEffect(() => {
-    if (!selectedDate) { setDayAppointments([]); return; }
-    const loadDayAppts = async () => {
-      try {
-        const q = query(collection(db, "appointments"), where("date", "==", selectedDate));
-        const snapshot = await getDocs(q);
-        setDayAppointments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      } catch (err) { console.log(err); }
-    };
-    loadDayAppts();
+    if (selectedDate) chargerPlaces(selectedDate);
+    else setPlaces({});
   }, [selectedDate]);
-
-  // --- Calcule les places restantes pour un créneau donné ---
-  const getSlotAvailability = (time) => {
-    if (!selectedDate) return null;
-    const dayOfWeek = new Date(selectedDate + 'T12:00:00').getDay();
-    const config = DAY_SLOTS[dayOfWeek];
-    if (!config) return null;
-
-    // Créneau bloqué par l'admin ?
-    const adminBlocked = dayAppointments.some(a => a.time === time && a.status === 'BLOQUÉ_ADMIN');
-    if (adminBlocked) return null;
-
-    const appts = dayAppointments.filter(a => a.time === time && a.status !== 'BLOQUÉ_ADMIN');
-    return {
-      postop: Math.max(0, config.postop - appts.filter(a => a.category === 'postop').length),
-      autre:  Math.max(0, config.autre  - appts.filter(a => a.category === 'autre').length),
-    };
-  };
-
-  // --- ENVOI DE L'EMAIL DE CONFIRMATION ---
-  const sendConfirmationEmail = () => {
-    const templateParams = {
-      to_name: `${client.prenom} ${client.nom}`,
-      to_email: client.email,
-      date: new Date(selectedDate + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }),
-      time: selectedTime,
-      category: CATEGORY_LABELS[selectedCategory] || selectedCategory,
-      address: "18 Rue d'Armenonville, 92200 Neuilly-sur-Seine",
-      reply_to: "signature.wellnessagenda@gmail.com"
-    };
-    emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams, 'YOUR_PUBLIC_KEY')
-      .then(() => console.log("Email envoyé !"))
-      .catch(err => console.log("Erreur email :", err));
-  };
 
   // --- Une date antérieure à aujourd'hui n'est jamais réservable ---
   const estPasse = (dateObj) => {
@@ -115,7 +124,7 @@ export default function Booking() {
     const month = viewDate.getMonth();
     const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     const dayOfWeek = new Date(year, month, day).getDay();
-    if (blockedDates.includes(dateStr) || !DAY_SLOTS[dayOfWeek] || estPasse(new Date(year, month, day))) return;
+    if (blockedDates.includes(dateStr) || !JOURS_OUVERTS.includes(dayOfWeek) || estPasse(new Date(year, month, day))) return;
     setSelectedDate(dateStr);
     setSelectedTime('');
     setSelectedCategory('');
@@ -127,30 +136,49 @@ export default function Booking() {
   };
 
   const handleClientChange = (e) => setClient({ ...client, [e.target.name]: e.target.value });
-  const handleInfoSubmit = (e) => { e.preventDefault(); setStep(2); };
-  const handleDateSubmit = () => { if (selectedTime && selectedCategory) setStep(3); };
+  const handleInfoSubmit = (e) => { e.preventDefault(); ecrireBrouillon(client); setMessage(''); setStep(2); };
+  const handleDateSubmit = () => { if (selectedTime && selectedCategory) { setMessage(''); setStep(3); } };
 
-  const handleSuccessPayment = async () => {
+  // --- Paiement de l'acompte : redirection vers Stripe Checkout ---
+  const payerAcompte = async () => {
+    if (!accepteConditions || paiementEnCours) return;
+    setPaiementEnCours(true);
+    setMessage('');
     try {
-      await addDoc(collection(db, "appointments"), {
-        client,
-        date: selectedDate,
-        time: selectedTime,
-        category: selectedCategory,
-        status: "confirmé",
-        paid: true,
-        created_at: new Date()
+      const res = await fetch('/api/creer-paiement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client, date: selectedDate, time: selectedTime, category: selectedCategory, accepteConditions }),
       });
-      sendConfirmationEmail();
-      setIsConfirmed(true);
-    } catch (error) {
-      console.error(error);
-      alert("Erreur technique lors de l'enregistrement.");
+      const data = await res.json();
+      if (res.ok && data.url) {
+        ecrireBrouillon(client);
+        window.location.href = data.url;
+        return;
+      }
+      setMessage(data.erreur || 'Erreur technique, merci de réessayer.');
+      if (data.complet) {
+        setSelectedTime('');
+        setStep(2);
+        chargerPlaces(selectedDate);
+      }
+    } catch {
+      setMessage('Connexion impossible, merci de réessayer.');
     }
+    setPaiementEnCours(false);
   };
 
+  // --- VÉRIFICATION DU PAIEMENT ---
+  if (verification) {
+    return (
+      <div className="pt-40 pb-20 px-4 min-h-screen bg-white text-center">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold">Vérification du paiement…</p>
+      </div>
+    );
+  }
+
   // --- ECRAN DE SUCCÈS ---
-  if (isConfirmed) {
+  if (confirmation) {
     return (
       <div className="pt-40 pb-20 px-4 min-h-screen bg-white text-center animate-fade-in">
         <img loading="lazy" decoding="async" src={logo} alt="Signature Wellness" className="h-16 mx-auto mb-10" />
@@ -162,16 +190,16 @@ export default function Booking() {
             Rendez-vous Confirmé
           </h1>
           <p className="text-stone-500 font-light leading-relaxed mb-10">
-            Merci de votre confiance, {client.prenom}. <br />
-            Un récapitulatif détaillé vous a été envoyé par e-mail.
+            Merci de votre confiance, {confirmation.prenom}. <br />
+            Votre acompte de 50 € a bien été réglé.
           </p>
           <div className="bg-stone-50 p-8 rounded-2xl border border-stone-100 text-left space-y-6">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-2">Prestation & Horaire</p>
               <p className="text-stone-800 font-medium capitalize">
-                {new Date(selectedDate + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} à {selectedTime}
+                {formatDate(confirmation.date)} à {confirmation.time}
               </p>
-              <p className="text-stone-500 text-sm mt-1">{CATEGORY_LABELS[selectedCategory]}</p>
+              <p className="text-stone-500 text-sm mt-1">{confirmation.categorie}</p>
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-2">Lieu du rendez-vous</p>
@@ -191,6 +219,8 @@ export default function Booking() {
     );
   }
 
+  const creneauxLibres = timeSlots.filter(t => (places[t] ?? 0) > 0);
+
   return (
     <div className="pt-32 pb-20 px-4 min-h-screen bg-stone-50 font-sans">
       <div className="max-w-4xl mx-auto">
@@ -198,6 +228,12 @@ export default function Booking() {
           <h1 className="text-3xl font-light uppercase tracking-widest text-stone-800 mb-2" style={{ fontFamily: "'Tenor Sans', sans-serif" }}>Réservation</h1>
           <p className="text-stone-400 text-[10px] font-bold tracking-[0.3em] uppercase">Étape {step} sur 3</p>
         </div>
+
+        {message && (
+          <div role="status" className="max-w-2xl mx-auto mb-6 bg-white border border-stone-200 text-stone-600 text-sm rounded-2xl px-5 py-4 text-center">
+            {message}
+          </div>
+        )}
 
         <div className="bg-white rounded-3xl shadow-xl shadow-stone-200/50 overflow-hidden border border-stone-100 p-6 md:p-10">
 
@@ -215,7 +251,7 @@ export default function Booking() {
             </form>
           )}
 
-          {/* ─── ÉTAPE 2 : Date + Créneau + Catégorie ─── */}
+          {/* ─── ÉTAPE 2 : Date + Créneau + Type de soin ─── */}
           {step === 2 && (
             <div className="flex flex-col md:flex-row gap-12">
 
@@ -224,8 +260,8 @@ export default function Booking() {
                 <div className="flex justify-between items-center mb-8">
                   <h2 className="text-sm font-bold text-stone-700 uppercase tracking-widest">{months[viewDate.getMonth()]} {viewDate.getFullYear()}</h2>
                   <div className="flex gap-4">
-                    <button onClick={() => changeMonth(-1)} className="text-stone-400 hover:text-stone-800 transition-colors text-xl">←</button>
-                    <button onClick={() => changeMonth(1)} className="text-stone-400 hover:text-stone-800 transition-colors text-xl">→</button>
+                    <button onClick={() => changeMonth(-1)} aria-label="Mois précédent" className="text-stone-400 hover:text-stone-800 transition-colors text-xl">←</button>
+                    <button onClick={() => changeMonth(1)} aria-label="Mois suivant" className="text-stone-400 hover:text-stone-800 transition-colors text-xl">→</button>
                   </div>
                 </div>
                 <div className="grid grid-cols-7 gap-2 mb-4 text-center">
@@ -237,7 +273,7 @@ export default function Booking() {
                     const day = i + 1;
                     const dateStr = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
                     const dateObj = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
-                    const isClosed = !DAY_SLOTS[dateObj.getDay()];
+                    const isClosed = !JOURS_OUVERTS.includes(dateObj.getDay());
                     const isBlocked = blockedDates.includes(dateStr) || isClosed || estPasse(dateObj);
                     const isSelected = selectedDate === dateStr;
                     return (
@@ -255,7 +291,7 @@ export default function Booking() {
                 </div>
               </div>
 
-              {/* Créneaux + Catégories */}
+              {/* Créneaux + Type de soin */}
               <div className="flex-1 border-l border-stone-100 md:pl-10">
                 {!selectedDate ? (
                   <div className="h-full flex flex-col items-center justify-center text-stone-300 opacity-50">
@@ -264,45 +300,49 @@ export default function Booking() {
                 ) : (
                   <div className="animate-fade-in">
                     <h3 className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-6 text-center">Créneaux disponibles</h3>
-                    <div className="space-y-3">
-                      {timeSlots.map(time => {
-                        const avail = getSlotAvailability(time);
-                        if (!avail || (avail.postop === 0 && avail.autre === 0)) return null;
-                        return (
-                          <div key={time} className="border border-stone-100 rounded-xl p-3 bg-stone-50/50">
-                            <p className="text-xs font-bold text-stone-700 mb-2">{time}</p>
-                            <div className="flex flex-wrap gap-2">
-                              {avail.postop > 0 && (
-                                <button
-                                  onClick={() => { setSelectedTime(time); setSelectedCategory('postop'); }}
-                                  className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border ${
-                                    selectedTime === time && selectedCategory === 'postop'
-                                      ? 'bg-stone-800 text-white border-stone-800 shadow-md'
-                                      : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
-                                  }`}
-                                >
-                                  Post-opératoire
-                                  <span className="ml-1 opacity-60">({avail.postop})</span>
-                                </button>
-                              )}
-                              {avail.autre > 0 && (
-                                <button
-                                  onClick={() => { setSelectedTime(time); setSelectedCategory('autre'); }}
-                                  className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border ${
-                                    selectedTime === time && selectedCategory === 'autre'
-                                      ? 'bg-stone-800 text-white border-stone-800 shadow-md'
-                                      : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
-                                  }`}
-                                >
-                                  Autre
-                                  <span className="ml-1 opacity-60">({avail.autre})</span>
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    {chargementCreneaux ? (
+                      <p className="text-center text-[10px] uppercase tracking-widest text-stone-300 font-bold py-8">Chargement…</p>
+                    ) : creneauxLibres.length === 0 ? (
+                      <p className="text-center text-sm text-stone-400 py-8">Plus aucun créneau ce jour-là.</p>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-2">
+                        {creneauxLibres.map(time => (
+                          <button
+                            key={time}
+                            onClick={() => setSelectedTime(time)}
+                            className={`py-3 rounded-lg text-xs font-bold tracking-wider transition-all border ${
+                              selectedTime === time
+                                ? 'bg-stone-800 text-white border-stone-800 shadow-md'
+                                : 'bg-white text-stone-600 border-stone-200 hover:border-stone-400'
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {selectedTime && (
+                      <div className="mt-8 animate-fade-in">
+                        <h3 className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-4 text-center">Type de soin</h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {Object.entries(CATEGORY_LABELS).map(([cle, label]) => (
+                            <button
+                              key={cle}
+                              onClick={() => setSelectedCategory(cle)}
+                              className={`px-3 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                selectedCategory === cle
+                                  ? 'bg-stone-800 text-white border-stone-800 shadow-md'
+                                  : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <button
                       onClick={handleDateSubmit}
                       disabled={!selectedTime || !selectedCategory}
@@ -324,21 +364,45 @@ export default function Booking() {
           {step === 3 && (
             <div className="text-center max-w-md mx-auto">
               <h2 className="text-sm font-bold text-stone-400 mb-10 uppercase tracking-[0.3em]">Récapitulatif & Acompte</h2>
-              <div className="bg-stone-50 rounded-2xl p-8 mb-10 border border-stone-100">
+              <div className="bg-stone-50 rounded-2xl p-8 mb-8 border border-stone-100">
                 <p className="text-stone-800 font-bold text-sm uppercase tracking-widest mb-1 capitalize">
-                  {new Date(selectedDate + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  {formatDate(selectedDate)}
                 </p>
                 <p className="text-stone-500 text-4xl font-light mb-2">{selectedTime}</p>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-stone-400 font-bold mb-8">
                   {CATEGORY_LABELS[selectedCategory]}
                 </p>
                 <div className="border-t border-stone-200 pt-6 flex justify-between items-center">
-                  <span className="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Acompte sécurisé</span>
+                  <span className="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Acompte</span>
                   <span className="font-bold text-stone-800">50,00 €</span>
                 </div>
               </div>
-              <PaymentButton amount="50.00" onSuccess={handleSuccessPayment} />
-              <p className="mt-8 text-[10px] text-stone-300 uppercase tracking-widest">Paiement 100% sécurisé via PayPal</p>
+
+              <label className="flex items-start gap-3 text-left text-xs text-stone-500 leading-relaxed mb-8 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={accepteConditions}
+                  onChange={(e) => setAccepteConditions(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 accent-stone-800 shrink-0"
+                />
+                <span>J'ai bien noté que l'acompte de 50 € est <strong className="text-stone-700">non remboursable</strong>, y compris en cas d'annulation ou d'absence.</span>
+              </label>
+
+              <button
+                onClick={payerAcompte}
+                disabled={!accepteConditions || paiementEnCours}
+                className={`w-full py-4 rounded-xl font-bold uppercase text-[10px] tracking-[0.2em] transition-colors ${
+                  accepteConditions && !paiementEnCours
+                    ? 'bg-stone-800 text-white hover:bg-stone-700'
+                    : 'bg-stone-100 text-stone-300 cursor-not-allowed'
+                }`}
+              >
+                {paiementEnCours ? 'Redirection vers le paiement…' : "Payer l'acompte par carte"}
+              </button>
+              <button onClick={() => setStep(2)} className="mt-6 text-[10px] uppercase tracking-[0.3em] text-stone-400 hover:text-stone-800 transition-colors">
+                Modifier le créneau
+              </button>
+              <p className="mt-8 text-[10px] text-stone-300 uppercase tracking-widest">Paiement sécurisé par carte bancaire via Stripe</p>
             </div>
           )}
         </div>

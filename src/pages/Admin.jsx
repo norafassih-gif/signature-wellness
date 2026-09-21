@@ -8,11 +8,13 @@ import useGoogleCalendar from '../hooks/useGoogleCalendar';
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const daysOfWeek = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const timeSlots = ["11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+const STATUTS_MASQUES = ["en_attente", "expiré", "annulé"];
 
 export default function Admin() {
   const [user, setUser] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [blockedDays, setBlockedDays] = useState([]);
+  const [placesEnPlus, setPlacesEnPlus] = useState([]);
 
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
@@ -41,11 +43,18 @@ export default function Admin() {
   const loadData = async () => {
     const qAppt = query(collection(db, "appointments"), orderBy("time"));
     const snapshotAppt = await getDocs(qAppt);
-    setAppointments(snapshotAppt.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    // Les réservations en cours de paiement, expirées ou abandonnées ne sont pas affichées
+    setAppointments(snapshotAppt.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(a => !STATUTS_MASQUES.includes(a.status)));
 
     const qBlocked = query(collection(db, "schedule_exceptions"), where("type", "==", "blocked"));
     const snapshotBlocked = await getDocs(qBlocked);
     setBlockedDays(snapshotBlocked.docs.map(doc => ({ id: doc.id, date: doc.data().date })));
+
+    const qPlaces = query(collection(db, "schedule_exceptions"), where("type", "==", "place_en_plus"));
+    const snapshotPlaces = await getDocs(qPlaces);
+    setPlacesEnPlus(snapshotPlaces.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   };
 
   const handleDayClick = (day) => {
@@ -80,6 +89,17 @@ export default function Admin() {
     await loadData();
   };
 
+  // Ouvre (ou retire) une 2e place sur un créneau déjà pris
+  const togglePlaceEnPlus = async (time) => {
+    const existante = placesEnPlus.find(p => p.date === selectedDate && p.time === time);
+    if (existante) {
+      await deleteDoc(doc(db, "schedule_exceptions", existante.id));
+    } else {
+      await addDoc(collection(db, "schedule_exceptions"), { date: selectedDate, time, type: "place_en_plus" });
+    }
+    await loadData();
+  };
+
   const deleteAppointment = async (id) => {
     if (window.confirm("Supprimer ce rendez-vous ?")) {
       await deleteDoc(doc(db, "appointments", id));
@@ -91,7 +111,7 @@ export default function Admin() {
   useEffect(() => {
     if (isConnected && appointments.length > 0 && !hasSyncedOnLoad.current) {
       hasSyncedOnLoad.current = true;
-      const unsynced = appointments.filter(a => a.status !== "BLOQUÉ_ADMIN" && !a.gcal_event_id);
+      const unsynced = appointments.filter(a => a.status === "confirmé" && !a.gcal_event_id);
       if (unsynced.length > 0) handleSyncAll();
     }
   }, [isConnected, appointments]);
@@ -161,7 +181,7 @@ export default function Admin() {
   };
 
   const handleSyncAll = async () => {
-    const unsynced = appointments.filter(a => a.status !== "BLOQUÉ_ADMIN" && !a.gcal_event_id);
+    const unsynced = appointments.filter(a => a.status === "confirmé" && !a.gcal_event_id);
     for (const apt of unsynced) {
       await handleSync(apt);
     }
@@ -413,16 +433,18 @@ export default function Admin() {
 
                 {!blockedDays.some(b => b.date === selectedDate) && (
                   <div>
-                    <p className="font-bold text-stone-800 text-sm mb-4">Gérer les créneaux horaires</p>
+                    <p className="font-bold text-stone-800 text-sm mb-1">Gérer les créneaux horaires</p>
+                    <p className="text-xs text-stone-400 mb-4">1 cliente par créneau. « + 1 place » ouvre un doublon quand c'est plein.</p>
                     <div className="grid grid-cols-3 gap-2">
                       {timeSlots.map(time => {
                         const appt = appointments.find(a => a.date === selectedDate && a.time === time);
+                        const placeEnPlus = placesEnPlus.some(p => p.date === selectedDate && p.time === time);
                         const isBlockedAdmin = appt && appt.status === "BLOQUÉ_ADMIN";
                         const isClient = appt && appt.status !== "BLOQUÉ_ADMIN";
 
                         return (
+                          <div key={time} className="flex flex-col gap-1">
                           <button
-                            key={time}
                             onClick={() => toggleTimeSlot(time)}
                             disabled={isClient}
                             className={`
@@ -439,6 +461,15 @@ export default function Admin() {
                             {isClient && <span className="text-[8px] font-normal opacity-80 mt-1">CLIENT</span>}
                             {isBlockedAdmin && <span className="text-[8px] font-normal mt-1">FERMÉ</span>}
                           </button>
+                          {!isBlockedAdmin && (
+                            <button
+                              onClick={() => togglePlaceEnPlus(time)}
+                              className={`text-[9px] uppercase tracking-wider py-1 rounded transition-colors ${placeEnPlus ? 'text-blue-500 hover:text-red-500' : 'text-stone-400 hover:text-stone-800'}`}
+                            >
+                              {placeEnPlus ? '2 places · retirer' : '+ 1 place'}
+                            </button>
+                          )}
+                          </div>
                         );
                       })}
                     </div>
